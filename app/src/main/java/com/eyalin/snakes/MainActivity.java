@@ -164,15 +164,23 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
         else if(view.getId() == R.id.SendMessage)
         {
 
-            byte[] message = editText.getText().toString().getBytes();
-            for (Participant p : roomPlay.getParticipants()) {
-                if (!p.getPlayer().getPlayerId().equals(currentPlayer.getPlayerId())) {
-                    Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, this, message,
-                            roomPlay.getRoomId(), p.getParticipantId());
-                }
-            }
+            endTurn();
         }
     }
+
+   private void endTurn()
+   {
+       //insert any object instead of string, and make sure you parse it in message recieved
+       byte[] message = editText.getText().toString().getBytes();
+
+       for (Participant p : roomPlay.getParticipants()) {
+           if (!p.getPlayer().getPlayerId().equals(currentPlayer.getPlayerId())) {
+               Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, this, message,
+                       roomPlay.getRoomId(), p.getParticipantId());
+           }
+       }
+   }
+
     @Override
     protected void onStart() {
         super.onStart();
