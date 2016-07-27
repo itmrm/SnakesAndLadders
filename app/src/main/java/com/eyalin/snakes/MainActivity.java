@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
+import com.eyalin.snakes.Server.RoomPlayModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -65,12 +65,12 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
     private static final long ROLE_1 = 0x1; // 001 in binary
     private static final long ROLE_2 = 0x2; // 010 in binary
     private static final long ROLE_WIZARD = 0x4; // 100 in binary
-    private  Player currentPlayer;
+   // private  Player currentPlayer;
     final static int RC_SELECT_PLAYERS = 10000;
     private  String mIncomingInvitationId;
     private   Button button;
     private   EditText editText;
-    private   Room roomPlay;
+    //private   Room roomPlay;
     // are we already playing?
     boolean mPlaying = false;
     // at least 2 players required for our game
@@ -173,10 +173,11 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
        //insert any object instead of string, and make sure you parse it in message recieved
        byte[] message = editText.getText().toString().getBytes();
 
-       for (Participant p : roomPlay.getParticipants()) {
-           if (!p.getPlayer().getPlayerId().equals(currentPlayer.getPlayerId())) {
+
+       for (Participant p : RoomPlayModel.room.getParticipants()) {
+           if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId())) {
                Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, this, message,
-                       roomPlay.getRoomId(), p.getParticipantId());
+                       RoomPlayModel.room.getRoomId(), p.getParticipantId());
            }
        }
    }
@@ -225,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
 
         // Set the greeting appropriately on main menu
         Player p = Games.Players.getCurrentPlayer(mGoogleApiClient);
-        currentPlayer = p;
+        RoomPlayModel.currentPlayer = p;
         String displayName;
         if (p == null) {
             displayName = "???";
@@ -397,7 +398,8 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
         editText.setEnabled(true);
         editText.setInputType(InputType.TYPE_CLASS_TEXT);
         button.setEnabled(true);
-        roomPlay = room;
+        RoomPlayModel.room = room;
+       // roomPlay = room;
         // show error message, return to main screen.
     }
 
