@@ -2,13 +2,11 @@ package com.eyalin.snakes;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -50,48 +48,38 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
     private Button btn_Invite;
     private Button btn_SeeInventations;
 
-
-
-    // request code for the "select players" UI
-    // can be any number as long as it's unique
-    // are we already playing?
     boolean mExplicitSignOut = false;
     int REQUEST_CODE_RESOLVE_ERR = 1000;
     boolean mInSignInFlow = false; // set to true when you're in the middle of the
-    // sign in flow, to know you should not attempt
-    // to connect in onStart()
-    // at least 2 players required for our game
-    // arbitrary request code for the waiting room UI.
-// This can be any integer that's unique in your Activity.
+
     final static int RC_WAITING_ROOM = 10002;
     private String mRoomId = "2";
     private GoogleApiClient mGoogleApiClient;
     private static int RC_SIGN_IN = 9001;
-    // request code (can be any number, as long as it's unique)
     final static int RC_INVITATION_INBOX = 10001;
     private boolean mResolvingConnectionFailure = false;
     private boolean mSignInClicked = false;
     private boolean mAutoStartSignInFlow = true;
     private ConnectionResult mConnectionResult;
-    // How long to show toasts.
     final static int TOAST_DELAY = Toast.LENGTH_SHORT;
     private static final long ROLE_1 = 0x1; // 001 in binary
     private static final long ROLE_2 = 0x2; // 010 in binary
     private static final long ROLE_WIZARD = 0x4; // 100 in binary
     private  Player currentPlayer;
-    // request code for the "select players" UI
-// can be any number as long as it's unique
     final static int RC_SELECT_PLAYERS = 10000;
     private  String mIncomingInvitationId;
-private   Button button;
+    private   Button button;
     private   EditText editText;
     private   Room roomPlay;
+    // are we already playing?
+    boolean mPlaying = false;
+    // at least 2 players required for our game
+    final static int MIN_PLAYERS = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // launch the player selection screen
 
-        //  Games.GamesOptions gamesOptions = Games.GamesOptions.builder().setRequireGooglePlus(true).build();
         // Create the Google Api Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
@@ -103,6 +91,12 @@ private   Button button;
 
         setContentView(R.layout.activity_main);
 
+        initialActivity();
+
+    }
+
+    private void initialActivity()
+    {
         btn_SignIn = (SignInButton) findViewById(R.id.sign_in_button);
         setGooglePlusButtonText(btn_SignIn,"Sign in to play online");
 
@@ -116,17 +110,17 @@ private   Button button;
         btn_Invite.setOnClickListener(this);
         btn_SeeInventations.setOnClickListener(this);
 
-        setOnlineButtonVisablity(false);
+        setOnlineButtonVisibility(false);
 
         findViewById(R.id.startQuickGame).setOnClickListener(this);
         findViewById(R.id.SendMessage).setOnClickListener(this);
 
-         button = (Button)findViewById(R.id.SendMessage);
+        button = (Button)findViewById(R.id.SendMessage);
         button.setEnabled(false);
-         editText = (EditText)findViewById(R.id.edit_message);
+        editText = (EditText)findViewById(R.id.edit_message);
         editText.setInputType(InputType.TYPE_NULL);
-
     }
+
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.sign_in_button) {
@@ -140,13 +134,13 @@ private   Button button;
             mSignInClicked = true;
             mGoogleApiClient.connect();
         }
-        else if (view.getId() == R.id.sign_out_button) {
+            else if (view.getId() == R.id.sign_out_button) {
             // sign out.
             mSignInClicked = false;
             try {
                 boolean test = mGoogleApiClient.isConnected();
                 Games.signOut(mGoogleApiClient);
-// show sign-out button, hide the sign-in button
+            // show sign-out button, hide the sign-in button
                 findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
                 findViewById(R.id.sign_out_button).setVisibility(View.GONE);
             } catch (Throwable e) {
@@ -214,7 +208,7 @@ private   Button button;
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        setOnlineButtonVisablity(true);
+        setOnlineButtonVisibility(true);
         // Show sign-out button on main menu
         Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
         // show sign-out button, hide the sign-in button
@@ -272,8 +266,6 @@ private   Button button;
                 mGoogleApiClient.connect();
             }
         }
-//        // Save the result and resolve the connection failure upon a user click.
-//        mConnectionResult = result;
 
     }
     @Override
@@ -357,7 +349,6 @@ private   Button button;
 
     }
 
-
     @Override
     public void onJoinedRoom(int statusCode, Room room) {
         if (statusCode != GamesStatusCodes.STATUS_OK) {
@@ -386,7 +377,6 @@ private   Button button;
     public void onLeftRoom(int i, String s) {
 
     }
-
     @Override
     public void onRoomConnected(int statusCode, Room room) {
         if (statusCode != GamesStatusCodes.STATUS_OK) {
@@ -402,11 +392,6 @@ private   Button button;
         roomPlay = room;
         // show error message, return to main screen.
     }
-    // are we already playing?
-    boolean mPlaying = false;
-
-    // at least 2 players required for our game
-    final static int MIN_PLAYERS = 2;
 
     // returns whether there are enough players to start the game
     boolean shouldStartGame(Room room) {
@@ -504,8 +489,7 @@ private   Button button;
     @Override
     public void onPeerJoined(Room room, List<String> list) {
 
-        boolean test = true;
-        test = false;
+        //someone joined room
     }
 
     @Override
@@ -529,7 +513,6 @@ private   Button button;
         editText.setInputType(InputType.TYPE_NULL);
     }
 
-
     //change Sign in Text
     protected void setGooglePlusButtonText(SignInButton signInButton, String buttonText) {
         // Find the TextView that is inside of the SignInButton and set its text
@@ -546,8 +529,11 @@ private   Button button;
         }
     }
 
-    private void setOnlineButtonVisablity(boolean isOnline)
+    private void setOnlineButtonVisibility(boolean isOnline)
     {
+        //here we handle the multi player.
+        //if isOnline true, so this player is online
+
         if (  isOnline  )
         {
             btn_SignOut.setVisibility(View.VISIBLE);
