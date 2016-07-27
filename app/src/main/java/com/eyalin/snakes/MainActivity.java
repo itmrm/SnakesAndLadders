@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
 
     final static int RC_WAITING_ROOM = 10002;
     private String mRoomId = "2";
-    private GoogleApiClient mGoogleApiClient;
+   // private GoogleApiClient mGoogleApiClient;
     private static int RC_SIGN_IN = 9001;
     final static int RC_INVITATION_INBOX = 10001;
     private boolean mResolvingConnectionFailure = false;
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
         // launch the player selection screen
 
         // Create the Google Api Client with access to Plus and Games
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        RoomPlayModel.mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .addConnectionCallbacks(this)
@@ -132,14 +132,14 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
             // start the sign-in flow
             Log.d("Game", "Sign-in button8 clicked");
             mSignInClicked = true;
-            mGoogleApiClient.connect();
+            RoomPlayModel.mGoogleApiClient.connect();
         }
             else if (view.getId() == R.id.sign_out_button) {
             // sign out.
             mSignInClicked = false;
             try {
-                boolean test = mGoogleApiClient.isConnected();
-                Games.signOut(mGoogleApiClient);
+                boolean test =RoomPlayModel. mGoogleApiClient.isConnected();
+                Games.signOut(RoomPlayModel.mGoogleApiClient);
             // show sign-out button, hide the sign-in button
                 findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
                 findViewById(R.id.sign_out_button).setVisibility(View.GONE);
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
         }
         else if(view.getId() == R.id.invite_button)
         {
-            Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(mGoogleApiClient, 1, 3);
+            Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(RoomPlayModel.mGoogleApiClient, 1, 3);
             startActivityForResult(intent, RC_SELECT_PLAYERS);
         }
         else if(view.getId() == R.id.startQuickGame)
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
 
        for (Participant p : RoomPlayModel.room.getParticipants()) {
            if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId())) {
-               Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, this, message,
+               Games.RealTimeMultiplayer.sendReliableMessage(RoomPlayModel.mGoogleApiClient, this, message,
                        RoomPlayModel.room.getRoomId(), p.getParticipantId());
            }
        }
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
         super.onStart();
         if (!mInSignInFlow && !mExplicitSignOut) {
             // auto sign in
-            mGoogleApiClient.connect();
+            RoomPlayModel.mGoogleApiClient.connect();
         }
 
     }
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
+        RoomPlayModel.mGoogleApiClient.disconnect();
         ((TextView)findViewById(R.id.lbHeader)).setText("not connected" );
     }
 
@@ -219,13 +219,13 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
     public void onConnected(Bundle connectionHint) {
         setOnlineButtonVisibility(true);
         // Show sign-out button on main menu
-        Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
+        Games.Invitations.registerInvitationListener(RoomPlayModel.mGoogleApiClient, this);
         // show sign-out button, hide the sign-in button
         findViewById(R.id.sign_in_button).setVisibility(View.GONE);
         findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
 
         // Set the greeting appropriately on main menu
-        Player p = Games.Players.getCurrentPlayer(mGoogleApiClient);
+        Player p = Games.Players.getCurrentPlayer(RoomPlayModel.mGoogleApiClient);
         RoomPlayModel.currentPlayer = p;
         String displayName;
         if (p == null) {
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
                 // accept invitation
                 RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
                 roomConfigBuilder.setInvitationIdToAccept(inv.getInvitationId());
-                Games.RealTimeMultiplayer.join(mGoogleApiClient, roomConfigBuilder.build());
+                Games.RealTimeMultiplayer.join(RoomPlayModel.mGoogleApiClient, roomConfigBuilder.build());
 
                 // prevent screen from sleeping during handshake
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
     private void seeInventations()
     {
         // launch the intent to show the invitation inbox screen
-        Intent intent = Games.Invitations.getInvitationInboxIntent(mGoogleApiClient);
+        Intent intent = Games.Invitations.getInvitationInboxIntent(RoomPlayModel.mGoogleApiClient);
         this.startActivityForResult(intent, RC_INVITATION_INBOX);
     }
 
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
             try {
                 result.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
             } catch (IntentSender.SendIntentException e) {
-                mGoogleApiClient.connect();
+                RoomPlayModel.mGoogleApiClient.connect();
             }
         }
 
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
                 roomConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
             }
             RoomConfig roomConfig = roomConfigBuilder.build();
-            Games.RealTimeMultiplayer.create(mGoogleApiClient, roomConfig);
+            Games.RealTimeMultiplayer.create(RoomPlayModel.mGoogleApiClient, roomConfig);
 
             // prevent screen from sleeping during handshake
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
         {
             RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
             roomConfigBuilder.setInvitationIdToAccept(mIncomingInvitationId);
-            Games.RealTimeMultiplayer.join(mGoogleApiClient, roomConfigBuilder.build());
+            Games.RealTimeMultiplayer.join(RoomPlayModel.mGoogleApiClient, roomConfigBuilder.build());
 
 // prevent screen from sleeping during handshake
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
     @Override
     public void onConnectionSuspended(int i) {
         // Attempt to reconnect
-        mGoogleApiClient.connect();
+        RoomPlayModel.mGoogleApiClient.connect();
     }
 
     private void startQuickGame() {
@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
         RoomConfig roomConfig = roomConfigBuilder.build();
 
         // create room:
-        Games.RealTimeMultiplayer.create(mGoogleApiClient, roomConfig);
+        Games.RealTimeMultiplayer.create(RoomPlayModel.mGoogleApiClient, roomConfig);
 
         // prevent screen from sleeping during handshake
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
         }
 
         // get waiting room intent
-        Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient, room, Integer.MAX_VALUE);
+        Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
         startActivityForResult(i, RC_WAITING_ROOM);
     }
 
@@ -378,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
         }
     //    roomPlay = room;
         // get waiting room intent
-        Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient, room, Integer.MAX_VALUE);
+        Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
         startActivityForResult(i, RC_WAITING_ROOM);
     }
 
@@ -438,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
             // the game to go on, end the game and leave the room.
         } else if (shouldCancelGame(room)) {
             // cancel the game
-            Games.RealTimeMultiplayer.leave(mGoogleApiClient, null, mRoomId);
+            Games.RealTimeMultiplayer.leave(RoomPlayModel.mGoogleApiClient, null, mRoomId);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
@@ -457,7 +457,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
     public void onPeerLeft(Room room, List<String> peers) {
         // peer left -- see if game should be canceled
         if (!mPlaying && shouldCancelGame(room)) {
-            Games.RealTimeMultiplayer.leave(mGoogleApiClient, null, mRoomId);
+            Games.RealTimeMultiplayer.leave(RoomPlayModel.mGoogleApiClient, null, mRoomId);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }
@@ -491,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements RealTimeMultiplay
     public void onPeerDeclined(Room room, List<String> peers) {
         // peer declined invitation -- see if game should be canceled
         if (!mPlaying && shouldCancelGame(room)) {
-            Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, mRoomId);
+            Games.RealTimeMultiplayer.leave(RoomPlayModel.mGoogleApiClient, this, mRoomId);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
     }

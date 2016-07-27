@@ -1,5 +1,6 @@
 package com.eyalin.snakes.Server;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 
@@ -9,6 +10,7 @@ import com.google.android.gms.games.multiplayer.realtime.Room;
 public  class RoomPlayModel {
     public static Room room;
     public static Player currentPlayer;
+    public static GoogleApiClient mGoogleApiClient;
 
 
 
