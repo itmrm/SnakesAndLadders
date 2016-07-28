@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:background="@drawable/main_background"
 
-    tools:context="com.eyalin.snakes.MainActivity">
+    tools:context=".LoginActivity">
 
     <TextView
         android:id="@+id/lbHeader"

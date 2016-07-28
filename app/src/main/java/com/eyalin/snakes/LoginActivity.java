@@ -39,7 +39,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements RealTimeMultiplayer.ReliableMessageSentCallback, View.OnClickListener,OnInvitationReceivedListener, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,RoomUpdateListener,RoomStatusUpdateListener, RealTimeMessageReceivedListener {
+public class LoginActivity extends AppCompatActivity implements RealTimeMultiplayer.ReliableMessageSentCallback, View.OnClickListener,OnInvitationReceivedListener, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,RoomUpdateListener,RoomStatusUpdateListener, RealTimeMessageReceivedListener {
 
 
     //Buttons
