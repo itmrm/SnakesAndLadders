@@ -1,6 +1,17 @@
 <resources>
-    <string name="app_name">Snakes</string>
+    <string name="app_name">Snakes &amp; Ladders</string>
     <!-- TODO: Replace this by your app's app ID! -->
     <string name="app_id">284981991315</string>
+    
+    <string name="single_player">Single Player</string>
+    <string name="multi_player">Multi Player</string>
+    <string name="exit">Exit</string>
+
+    <!-- Alert Dialog -->
+    <string name="new_game">NEW GAME</string>
+    <string name="name">Name:</string>
+    <string name="ok_btn">O.K.</string>
+    <string name="cancel_btn">Cancel</string>
+    <string name="cancel_msg">Game canceled</string>
 
 </resources>
