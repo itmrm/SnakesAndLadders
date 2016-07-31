@@ -55,7 +55,7 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
 
     public static Room roomPlay;
     public static Player currentPlayer;
-    public static boolean isCreator = false;
+    public static boolean isCreator = true;
     public static GoogleApiClient mGoogleApiClient;
     final static int TOAST_DELAY = Toast.LENGTH_SHORT;
     public static  String mIncomingInvitationId;
@@ -70,6 +70,11 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
     public RoomPlayModel(Context context) {
         this.mContext = context;
         Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
+        initialVariables();
+    }
+
+    private void initialVariables() {
+        isCreator = true;
     }
 
     //need to invoke in the end of player's turn
@@ -198,6 +203,7 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
 
     @Override
     public void onInvitationReceived(Invitation invitation) {
+        isCreator = false;
         // show in-game popup to let user know of pending invitation
         Toast.makeText(
                 mContext,
@@ -255,7 +261,7 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
 
         }
         else {
-            String dsf = room.getCreatorId();
+
             Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient,
                     room, Integer.MAX_VALUE);
             ((LoginActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
