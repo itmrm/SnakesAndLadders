@@ -48,6 +48,7 @@ import java.util.List;
 
     public static Room roomPlay;
     public static Player currentPlayer;
+    public static boolean isCreator = false;
     public static GoogleApiClient mGoogleApiClient;
     final static int TOAST_DELAY = Toast.LENGTH_SHORT;
     public static  String mIncomingInvitationId;
@@ -57,7 +58,7 @@ import java.util.List;
     public boolean mPlaying = false;
     public String mRoomId = "2";
     private  Context mContext;
-
+    int GamePlayerStatus = 0; // 0 - single player, 1 - leader, 2 - follower.
     public RoomPlayModel(Context context)
     {
         this.mContext = context;
@@ -218,6 +219,7 @@ import java.util.List;
         }
         else
         {
+
             Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient,
                     room, Integer.MAX_VALUE);
             ((LoginActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
