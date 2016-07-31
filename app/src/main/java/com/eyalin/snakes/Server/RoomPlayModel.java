@@ -224,12 +224,17 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
 
+
         try {
-            String string = new String(realTimeMessage.getMessageData(), "UTF-8");
-           Toast.makeText(mContext,string,TOAST_DELAY  ).show();
-        } catch (UnsupportedEncodingException e) {
+            GameStatus gameStatus = (GameStatus)convertFromBytes(realTimeMessage.getMessageData());
+            //send gameStatus to any function;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+
     }
 
     @Override
