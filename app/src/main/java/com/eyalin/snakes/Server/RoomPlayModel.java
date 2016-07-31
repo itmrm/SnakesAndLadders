@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eyalin.snakes.Listeners.GameListener;
 import com.eyalin.snakes.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -43,13 +44,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Sahbak on 27/07/2016.
- */public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdateListener,RoomUpdateListener,RealTimeMultiplayer.ReliableMessageSentCallback,
+public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdateListener,
+        RoomUpdateListener,RealTimeMultiplayer.ReliableMessageSentCallback,
         View.OnClickListener,OnInvitationReceivedListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        RealTimeMessageReceivedListener {
+        RealTimeMessageReceivedListener, GameListener {
 
     final static String tag = "RoomPlayModel";
 
@@ -66,12 +66,11 @@ import java.util.List;
     public String mRoomId = "2";
     private  Context mContext;
     int GamePlayerStatus = 0; // 0 - single player, 1 - leader, 2 - follower.
-    public RoomPlayModel(Context context)
-    {
+
+    public RoomPlayModel(Context context) {
         this.mContext = context;
         Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
     }
-
 
     //need to invoke in the end of player's turn
     private void MakeMove(GameStatus gameStatus) throws IOException {
@@ -86,6 +85,7 @@ import java.util.List;
             }
         }
     }
+
     private byte[] convertToBytes(Object object) throws IOException {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
              ObjectOutput out = new ObjectOutputStream(bos)) {
@@ -100,6 +100,7 @@ import java.util.List;
             return in.readObject();
         }
     }
+
     @Override
     public void onConnected(Bundle bundle) {
         Player p = Games.Players.getCurrentPlayer(RoomPlayModel.mGoogleApiClient);
@@ -253,9 +254,8 @@ import java.util.List;
         {
 
         }
-        else
-        {
-
+        else {
+            String dsf = room.getCreatorId();
             Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient,
                     room, Integer.MAX_VALUE);
             ((LoginActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
@@ -371,6 +371,31 @@ import java.util.List;
 
     @Override
     public void onP2PDisconnected(String s) {
+
+    }
+
+    @Override
+    public void makeSteps(int steps) {
+
+    }
+
+    @Override
+    public void turnChanged() {
+
+    }
+
+    @Override
+    public void makeShortcut(int shortcut) {
+
+    }
+
+    @Override
+    public void gameOver(com.eyalin.snakes.BL.Player winner) {
+
+    }
+
+    @Override
+    public void shortcutChange(int index) {
 
     }
 }

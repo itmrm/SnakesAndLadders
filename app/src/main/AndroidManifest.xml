@@ -30,7 +30,8 @@
         <activity
             android:name=".GameActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".WelcomeActivity"></activity>
+        <activity android:name=".WelcomeActivity" />
+        <activity android:name=".UI.testMultiChat"></activity>
     </application>
 
 </manifest>
