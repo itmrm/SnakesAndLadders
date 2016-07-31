@@ -1,7 +1,11 @@
 package com.eyalin.snakes;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -15,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.eyalin.snakes.Server.Communicator;
 import com.eyalin.snakes.Server.RoomPlayModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
@@ -39,8 +44,16 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoginActivity extends AppCompatActivity implements RealTimeMultiplayer.ReliableMessageSentCallback, View.OnClickListener,OnInvitationReceivedListener, GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,RoomUpdateListener,RoomStatusUpdateListener, RealTimeMessageReceivedListener {
+public class LoginActivity extends AppCompatActivity implements
+        RealTimeMultiplayer.ReliableMessageSentCallback,
+        View.OnClickListener,OnInvitationReceivedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        RoomUpdateListener,RoomStatusUpdateListener,
+        RealTimeMessageReceivedListener {
 
+    private Communicator mService;
+    boolean mBound = false;
 
     //Buttons
     private SignInButton btn_SignIn;
@@ -75,6 +88,8 @@ public class LoginActivity extends AppCompatActivity implements RealTimeMultipla
     boolean mPlaying = false;
     // at least 2 players required for our game
     final static int MIN_PLAYERS = 2;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,6 +204,8 @@ public class LoginActivity extends AppCompatActivity implements RealTimeMultipla
             // auto sign in
             RoomPlayModel.mGoogleApiClient.connect();
         }
+        Intent intent = new Intent(this, Communicator.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
     }
     @Override
@@ -212,6 +229,10 @@ public class LoginActivity extends AppCompatActivity implements RealTimeMultipla
     protected void onStop() {
         super.onStop();
         RoomPlayModel.mGoogleApiClient.disconnect();
+        if(mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
         ((TextView)findViewById(R.id.lbHeader)).setText("not connected" );
     }
 
@@ -560,4 +581,22 @@ public class LoginActivity extends AppCompatActivity implements RealTimeMultipla
         }
 
     }
+
+    //###########################################################################################
+    //service methods
+    //###########################################################################################
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBound = false;
+        }
+    };
 }

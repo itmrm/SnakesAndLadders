@@ -1,12 +1,7 @@
 package com.eyalin.snakes.Server;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -15,9 +10,9 @@ import com.eyalin.snakes.Listeners.ServerListener;
 
 import java.util.ArrayList;
 
-public class Server extends Service {
+public class Communicator extends Service {
 
-    final static String tag = "Server";
+    final static String tag = "Communicator";
 
     private final IBinder mBinder = new LocalBinder();
     private ArrayList<ServerListener> mListeners;
@@ -48,9 +43,11 @@ public class Server extends Service {
     }
 
     public class LocalBinder extends Binder {
-        Server getService() {
-            return Server.this;
+
+        public Communicator getService() {
+            return Communicator.this;
         }
+
     }
 
     @Override
