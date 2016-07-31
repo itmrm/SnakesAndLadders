@@ -32,6 +32,13 @@ import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +72,34 @@ import java.util.List;
         Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
     }
 
+
+    //need to invoke in the end of player's turn
+    private void MakeMove(GameStatus gameStatus) throws IOException {
+        //insert any object instead of string, and make sure you parse it in message recieved
+        byte[] message =  convertToBytes(gameStatus);
+
+
+        for (Participant p : RoomPlayModel.roomPlay.getParticipants()) {
+            if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId())) {
+                Games.RealTimeMultiplayer.sendReliableMessage(RoomPlayModel.mGoogleApiClient, this, message,
+                        RoomPlayModel.roomPlay.getRoomId(), p.getParticipantId());
+            }
+        }
+    }
+    private byte[] convertToBytes(Object object) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             ObjectOutput out = new ObjectOutputStream(bos)) {
+            out.writeObject(object);
+            return bos.toByteArray();
+        }
+    }
+
+    private Object convertFromBytes(byte[] bytes) throws IOException, ClassNotFoundException {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+             ObjectInput in = new ObjectInputStream(bis)) {
+            return in.readObject();
+        }
+    }
     @Override
     public void onConnected(Bundle bundle) {
         Player p = Games.Players.getCurrentPlayer(RoomPlayModel.mGoogleApiClient);
@@ -171,6 +206,7 @@ import java.util.List;
         // store invitation for use when player accepts this invitation
         RoomPlayModel.mIncomingInvitationId = invitation.getInvitationId();
     }
+
 
 
     @Override
