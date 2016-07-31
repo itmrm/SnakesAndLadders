@@ -52,6 +52,8 @@ public class LoginActivity extends AppCompatActivity implements
         RoomUpdateListener,RoomStatusUpdateListener,
         RealTimeMessageReceivedListener {
 
+    final static String tag = "LoginActivity";
+
     private Communicator mService;
     boolean mBound = false;
 
@@ -64,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements
     boolean mExplicitSignOut = false;
     int REQUEST_CODE_RESOLVE_ERR = 1000;
     boolean mInSignInFlow = false; // set to true when you're in the middle of the
-
+    private RoomPlayModel roomPlayModel;
     final static int RC_WAITING_ROOM = 10002;
     private String mRoomId = "2";
    // private GoogleApiClient mGoogleApiClient;
@@ -94,7 +96,7 @@ public class LoginActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // launch the player selection screen
-
+        roomPlayModel = new RoomPlayModel();
         // Create the Google Api Client with access to Plus and Games
         RoomPlayModel.mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
@@ -145,7 +147,7 @@ public class LoginActivity extends AppCompatActivity implements
 
 
             // start the sign-in flow
-            Log.d("Game", "Sign-in button8 clicked");
+            Log.d(tag , "Sign-in button8 clicked");
             mSignInClicked = true;
             RoomPlayModel.mGoogleApiClient.connect();
         }
@@ -208,6 +210,7 @@ public class LoginActivity extends AppCompatActivity implements
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
     }
+
     @Override
     public void onInvitationReceived(Invitation invitation) {
         // show in-game popup to let user know of pending invitation
@@ -217,7 +220,7 @@ public class LoginActivity extends AppCompatActivity implements
                         + invitation.getInviter().getDisplayName(), TOAST_DELAY)
                 .show();
         // store invitation for use when player accepts this invitation
-        mIncomingInvitationId = invitation.getInvitationId();
+        RoomPlayModel.mIncomingInvitationId = invitation.getInvitationId();
     }
 
     @Override
@@ -260,7 +263,7 @@ public class LoginActivity extends AppCompatActivity implements
 
             if (inv != null) {
                 // accept invitation
-                RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
+                RoomConfig.Builder roomConfigBuilder =roomPlayModel.makeBasicRoomConfigBuilder();
                 roomConfigBuilder.setInvitationIdToAccept(inv.getInvitationId());
                 Games.RealTimeMultiplayer.join(RoomPlayModel.mGoogleApiClient, roomConfigBuilder.build());
 
@@ -326,7 +329,7 @@ public class LoginActivity extends AppCompatActivity implements
             }
 
             // create the room and specify a variant if appropriate
-            RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
+            RoomConfig.Builder roomConfigBuilder = roomPlayModel.makeBasicRoomConfigBuilder();
             roomConfigBuilder.addPlayersToInvite(invitees);
             if (autoMatchCriteria != null) {
                 roomConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
@@ -339,7 +342,7 @@ public class LoginActivity extends AppCompatActivity implements
         }
         else if (request == 10001)
         {
-            RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
+            RoomConfig.Builder roomConfigBuilder = roomPlayModel.makeBasicRoomConfigBuilder();
             roomConfigBuilder.setInvitationIdToAccept(mIncomingInvitationId);
             Games.RealTimeMultiplayer.join(RoomPlayModel.mGoogleApiClient, roomConfigBuilder.build());
 
@@ -349,12 +352,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
-    // create a RoomConfigBuilder that's appropriate for your implementation
-    private RoomConfig.Builder makeBasicRoomConfigBuilder() {
-        return RoomConfig.builder(this)
-                .setMessageReceivedListener(this)
-                .setRoomStatusUpdateListener(this);
-    }
+
     @Override
     public void onConnectionSuspended(int i) {
         // Attempt to reconnect
@@ -367,7 +365,7 @@ public class LoginActivity extends AppCompatActivity implements
         Bundle am = RoomConfig.createAutoMatchCriteria(1, 1, 0);
 
         // build the room config:
-        RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
+        RoomConfig.Builder roomConfigBuilder = roomPlayModel.makeBasicRoomConfigBuilder();
         roomConfigBuilder.setAutoMatchCriteria(am);
         RoomConfig roomConfig = roomConfigBuilder.build();
 
