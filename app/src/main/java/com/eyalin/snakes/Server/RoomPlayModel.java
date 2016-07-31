@@ -1,6 +1,7 @@
 package com.eyalin.snakes.Server;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eyalin.snakes.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
@@ -44,22 +46,45 @@ import java.util.List;
 
     final static String tag = "RoomPlayModel";
 
-    public static Room room;
+    public static Room roomPlay;
     public static Player currentPlayer;
     public static GoogleApiClient mGoogleApiClient;
     final static int TOAST_DELAY = Toast.LENGTH_SHORT;
     public static  String mIncomingInvitationId;
-    final static int RC_SELECT_PLAYERS = 10000;
-    final static int RC_WAITING_ROOM = 10002;
-    final static int MIN_PLAYERS = 2;
-    boolean mPlaying = false;
-    private String mRoomId = "2";
+    public final static int RC_SELECT_PLAYERS = 10000;
+    public final static int RC_WAITING_ROOM = 10002;
+    public final static int MIN_PLAYERS = 2;
+    public boolean mPlaying = false;
+    public String mRoomId = "2";
+    private  Context mContext;
 
+    public RoomPlayModel(Context context)
+    {
+        this.mContext = context;
+        Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
         Player p = Games.Players.getCurrentPlayer(RoomPlayModel.mGoogleApiClient);
+        Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
         currentPlayer = p;
+        if (bundle != null) {
+            Invitation inv =
+                    bundle.getParcelable(Multiplayer.EXTRA_INVITATION);
+
+            if (inv != null) {
+                // accept invitation
+                RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
+                roomConfigBuilder.setInvitationIdToAccept(inv.getInvitationId());
+                Games.RealTimeMultiplayer.join(RoomPlayModel.mGoogleApiClient, roomConfigBuilder.build());
+
+                // prevent screen from sleeping during handshake
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+                // go to game screen
+            }
+        }
     }
 
     @Override
@@ -136,7 +161,14 @@ import java.util.List;
 
     @Override
     public void onInvitationReceived(Invitation invitation) {
-
+        // show in-game popup to let user know of pending invitation
+        Toast.makeText(
+                mContext,
+                "An invitation has arrived from "
+                        + invitation.getInviter().getDisplayName(), TOAST_DELAY)
+                .show();
+        // store invitation for use when player accepts this invitation
+        RoomPlayModel.mIncomingInvitationId = invitation.getInvitationId();
     }
 
 
@@ -150,7 +182,7 @@ import java.util.List;
 
         try {
             String string = new String(realTimeMessage.getMessageData(), "UTF-8");
-           Toast.makeText(this,string,TOAST_DELAY  );
+           Toast.makeText(mContext,string,TOAST_DELAY  ).show();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -158,7 +190,7 @@ import java.util.List;
 
     @Override
     public void onRealTimeMessageSent(int i, int i1, String s) {
-
+        //sent callback
     }
     @Override
     public void onJoinedRoom(int statusCode, Room room) {
@@ -169,7 +201,7 @@ import java.util.List;
 
         // get waiting room intent
         Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
-        startActivityForResult(i, RC_WAITING_ROOM);
+        ((LoginActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
     }
 
     @Override
@@ -188,7 +220,7 @@ import java.util.List;
         {
             Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient,
                     room, Integer.MAX_VALUE);
-            startActivityForResult(i, RC_WAITING_ROOM);
+            ((LoginActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
         }
 
     }
@@ -207,7 +239,7 @@ import java.util.List;
 
         }
 
-        RoomPlayModel.room = room;
+        RoomPlayModel.roomPlay = room;
         // roomPlay = room;
         // show error message, return to main screen.
     }

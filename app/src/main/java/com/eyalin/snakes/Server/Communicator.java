@@ -56,4 +56,9 @@ public class Communicator extends Service {
         Log.i(tag, "Service destroyed.");
     }
 
+
+    public void setMessageRecieved() {
+
+    }
+
 }

@@ -25,13 +25,7 @@
         android:shadowDy="5"
         android:shadowRadius="2"
         android:text="Snakes And Ladders" />
-    <Button
-        android:id="@+id/startQuickGame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="start Quick Game"
-        style="@style/mainButton"
-        />
+
     <!-- sign-in button -->
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
@@ -66,21 +60,6 @@
         android:text="See Inventations"
         style="@style/mainButton"
         />
-    <EditText android:id="@+id/edit_message"
-        android:layout_weight="1"
-        android:inputType="none"
 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Wait for Multi Player Connection"
 
-         />
-    <Button
-        android:id="@+id/SendMessage"
-        style="@style/mainButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Send"
-        android:clickable = "false"
-        />
 </LinearLayout >

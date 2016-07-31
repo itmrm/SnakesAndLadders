@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // launch the player selection screen
-        roomPlayModel = new RoomPlayModel();
+
         // Create the Google Api Client with access to Plus and Games
         RoomPlayModel.mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
@@ -129,13 +129,9 @@ public class LoginActivity extends AppCompatActivity implements
 
         setOnlineButtonVisibility(false);
 
-        findViewById(R.id.startQuickGame).setOnClickListener(this);
-        findViewById(R.id.SendMessage).setOnClickListener(this);
 
-        button = (Button)findViewById(R.id.SendMessage);
-        button.setEnabled(false);
-        editText = (EditText)findViewById(R.id.edit_message);
-        editText.setInputType(InputType.TYPE_NULL);
+        //button.setEnabled(false);
+       // editText.setInputType(InputType.TYPE_NULL);
     }
 
     @Override
@@ -170,31 +166,25 @@ public class LoginActivity extends AppCompatActivity implements
             Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(RoomPlayModel.mGoogleApiClient, 1, 3);
             startActivityForResult(intent, RC_SELECT_PLAYERS);
         }
-        else if(view.getId() == R.id.startQuickGame)
-        {
-            startQuickGame();
-        }
+
         else if(view.getId() == R.id.onInvitationReceived)
         {
             seeInventations();
         }
-        else if(view.getId() == R.id.SendMessage)
-        {
 
-            endTurn();
-        }
     }
 
+    //need to invoke in the end of player's turn
    private void endTurn()
    {
        //insert any object instead of string, and make sure you parse it in message recieved
        byte[] message = editText.getText().toString().getBytes();
 
 
-       for (Participant p : RoomPlayModel.room.getParticipants()) {
+       for (Participant p : RoomPlayModel.roomPlay.getParticipants()) {
            if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId())) {
                Games.RealTimeMultiplayer.sendReliableMessage(RoomPlayModel.mGoogleApiClient, this, message,
-                       RoomPlayModel.room.getRoomId(), p.getParticipantId());
+                       RoomPlayModel.roomPlay.getRoomId(), p.getParticipantId());
            }
        }
    }
@@ -243,7 +233,7 @@ public class LoginActivity extends AppCompatActivity implements
     public void onConnected(Bundle connectionHint) {
         setOnlineButtonVisibility(true);
         // Show sign-out button on main menu
-        Games.Invitations.registerInvitationListener(RoomPlayModel.mGoogleApiClient, this);
+        roomPlayModel = new RoomPlayModel(this);
         // show sign-out button, hide the sign-in button
         findViewById(R.id.sign_in_button).setVisibility(View.GONE);
         findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
@@ -263,7 +253,7 @@ public class LoginActivity extends AppCompatActivity implements
 
             if (inv != null) {
                 // accept invitation
-                RoomConfig.Builder roomConfigBuilder =roomPlayModel.makeBasicRoomConfigBuilder();
+                RoomConfig.Builder roomConfigBuilder = roomPlayModel.makeBasicRoomConfigBuilder();
                 roomConfigBuilder.setInvitationIdToAccept(inv.getInvitationId());
                 Games.RealTimeMultiplayer.join(RoomPlayModel.mGoogleApiClient, roomConfigBuilder.build());
 
@@ -343,7 +333,7 @@ public class LoginActivity extends AppCompatActivity implements
         else if (request == 10001)
         {
             RoomConfig.Builder roomConfigBuilder = roomPlayModel.makeBasicRoomConfigBuilder();
-            roomConfigBuilder.setInvitationIdToAccept(mIncomingInvitationId);
+            roomConfigBuilder.setInvitationIdToAccept(roomPlayModel.mIncomingInvitationId);
             Games.RealTimeMultiplayer.join(RoomPlayModel.mGoogleApiClient, roomConfigBuilder.build());
 
 // prevent screen from sleeping during handshake
@@ -417,7 +407,7 @@ public class LoginActivity extends AppCompatActivity implements
         editText.setEnabled(true);
         editText.setInputType(InputType.TYPE_CLASS_TEXT);
         button.setEnabled(true);
-        RoomPlayModel.room = room;
+        RoomPlayModel.roomPlay = room;
        // roomPlay = room;
         // show error message, return to main screen.
     }
@@ -537,9 +527,9 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     public void onRealTimeMessageSent(int i, int i1, String s) {
-        button.setEnabled(false);
-        editText.setEnabled(false);
-        editText.setInputType(InputType.TYPE_NULL);
+//        button.setEnabled(false);
+//        editText.setEnabled(false);
+//        editText.setInputType(InputType.TYPE_NULL);
     }
 
     //change Sign in Text
