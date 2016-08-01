@@ -192,9 +192,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         if (mode != 0) {
             Intent intent = new Intent(this, Communicator.class);
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-            room = mService.getRoomPlayModel();
-            room.setGame(game);
-            game.addListener(room);
             Log.i(tag, "Service Bind.");
         }
         super.onStart();
@@ -322,12 +319,12 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private ServiceConnection mConnection = new ServiceConnection() {
         // Called when the connection with the service is established
         public void onServiceConnected(ComponentName className, IBinder service) {
-            // Because we have bound to an explicit
-            // service that is running in our own process, we can
-            // cast its IBinder to a concrete class and directly access it.
             Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
+            room = mService.getRoomPlayModel();
+            room.setGame(game);
+            game.addListener(room);
         }
 
         // Called when the connection with the service disconnects unexpectedly
