@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity implements
     private SignInButton btn_SignIn;
     private Button btn_SignOut;
     private Button btn_Invite;
+    private Button btn_StartGame;
     private Button btn_SeeInventations;
 
     boolean mExplicitSignOut = false;
@@ -125,10 +126,13 @@ public class LoginActivity extends AppCompatActivity implements
         btn_SignOut = (Button)findViewById(R.id.sign_out_button);
         btn_Invite = (Button)findViewById(R.id.invite_button);
         btn_SeeInventations = (Button)findViewById(R.id.onInvitationReceived);
+        btn_StartGame = (Button)findViewById(R.id.btnStartGame);
+
 
         btn_SignIn.setOnClickListener(this);
         btn_SignOut.setOnClickListener(this);
         btn_Invite.setOnClickListener(this);
+        btn_StartGame.setOnClickListener(this);
         btn_SeeInventations.setOnClickListener(this);
 
         setOnlineButtonVisibility(false);
@@ -174,6 +178,10 @@ public class LoginActivity extends AppCompatActivity implements
         else if(view.getId() == R.id.onInvitationReceived)
         {
             seeInventations();
+        }
+        else if(view.getId() == R.id.btnStartGame)
+        {
+            startGame();
         }
 
     }
@@ -434,6 +442,7 @@ public class LoginActivity extends AppCompatActivity implements
         if (mPlaying) {
             // add new player to an ongoing game
         } else if (shouldStartGame(room)) {
+            startGame();
             // start game!
         }
     }

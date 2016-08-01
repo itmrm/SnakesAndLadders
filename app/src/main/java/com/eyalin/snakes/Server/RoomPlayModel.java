@@ -196,7 +196,7 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 
