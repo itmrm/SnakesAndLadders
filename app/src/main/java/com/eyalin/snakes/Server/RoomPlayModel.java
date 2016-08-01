@@ -265,7 +265,7 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
             // display error
             return;
         }
-        //    roomPlay = room;
+            roomPlay = room;
         // get waiting room intent
         if(mGoogleApiClient.isConnected() != true)
         {
@@ -372,6 +372,8 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
             // add new player to an ongoing game
         } else if (shouldStartGame(room)) {
             // start game!
+            roomPlay = room;
+            ((LoginActivity)mContext).startGame();
         }
     }
 

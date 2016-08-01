@@ -60,13 +60,6 @@
         android:text="See Inventations"
         style="@style/mainButton"
         />
-    <Button
-        android:id="@+id/btnStartGame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
 
-        android:text="Start Game"
-        style="@style/mainButton"
-        />
 
 </LinearLayout >
