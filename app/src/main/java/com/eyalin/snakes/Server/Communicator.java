@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.eyalin.snakes.Listeners.ServerListener;
 
@@ -62,6 +63,8 @@ public class Communicator extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Toast t = Toast.makeText(this, "Communicator Destroid.", Toast.LENGTH_SHORT);
+        t.show();
         Log.i(tag, "Service destroyed.");
     }
 
