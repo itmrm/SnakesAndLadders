@@ -14,4 +14,7 @@
     <string name="cancel_btn">Cancel</string>
     <string name="cancel_msg">Game canceled</string>
 
+    <string name="player">Player</string>
+    <string name="phone">Phone</string>
+
 </resources>

@@ -52,7 +52,11 @@ public class LoginActivity extends AppCompatActivity implements
         RoomUpdateListener,RoomStatusUpdateListener,
         RealTimeMessageReceivedListener {
 
-    final static String tag = "LoginActivity";
+    static final String tag = "LoginActivity";
+    static final String MULTI_KEY = "Multiplayer";
+    static final String PLAYER_NAME = "player";
+    static final String FRIEND_NAME = "friend";
+    static final String MODE_KEY = "GameMode";
 
     private Communicator mService;
     boolean mBound = false;

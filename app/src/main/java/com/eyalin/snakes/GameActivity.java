@@ -1,5 +1,6 @@
 package com.eyalin.snakes;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
@@ -52,7 +53,22 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         setContentView(R.layout.activity_game);
         Log.i(tag, "Layout set.");
 
-        players = new Player[]{new Player("Player"), new Player("Enemy")};
+        int mode = 0;
+        String pName;
+        String eName;
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getBundleExtra(LoginActivity.MULTI_KEY);
+        if (bundle != null) {
+            mode = bundle.getInt(LoginActivity.MODE_KEY);
+            pName = bundle.getString(LoginActivity.PLAYER_NAME);
+            eName = bundle.getString(LoginActivity.FRIEND_NAME);
+        }
+        else {
+            pName = String.valueOf(R.string.player);
+            eName = String.valueOf(R.string.phone);
+        }
+        players = new Player[]{new Player(pName), new Player(eName)};
         Log.i(tag, "Players set.");
         game = new Game(players);
         Log.i(tag, "Game generated.");
