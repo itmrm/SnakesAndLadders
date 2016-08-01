@@ -12,11 +12,14 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.eyalin.snakes.BL.AbsGame;
 import com.eyalin.snakes.BL.Game;
+import com.eyalin.snakes.BL.GameFollower;
 import com.eyalin.snakes.BL.Player;
 import com.eyalin.snakes.Listeners.GameListener;
 import com.eyalin.snakes.Listeners.PawnListener;
 import com.eyalin.snakes.Listeners.ShortListener;
+import com.eyalin.snakes.Server.RoomPlayModel;
 import com.eyalin.snakes.UI.BoardAdapter;
 import com.eyalin.snakes.UI.PawnManager;
 import com.eyalin.snakes.UI.ShortcutManager;
@@ -27,7 +30,10 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
     final static String tag = "GameActivity";
 
-    private Game game;
+    private RoomPlayModel room;
+    private int mode;
+
+    private AbsGame game;
     private Player[] players;
     private GridView boardGrid;
     private BoardAdapter boardAdapter;
@@ -53,7 +59,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         setContentView(R.layout.activity_game);
         Log.i(tag, "Layout set.");
 
-        int mode = 0;
+        mode = 0;
         String pName;
         String eName;
 
@@ -70,8 +76,16 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         }
         players = new Player[]{new Player(pName), new Player(eName)};
         Log.i(tag, "Players set.");
-        game = new Game(players);
+        if (mode != 2) {
+            game = new Game(players);
+            player = 0;
+        }
+        else {
+            game = new GameFollower(players);
+            player = 1;
+        }
         Log.i(tag, "Game generated.");
+
         pawn1 = (ImageView) findViewById(R.id.pawn1);
         pawn2 = (ImageView) findViewById(R.id.pawn2);
         Log.i(tag, "Game generated.");
@@ -81,17 +95,20 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         boardGrid.setAdapter(boardAdapter);
         Log.i(tag, "Board generated.");
 
-        dice = (ImageView) findViewById(R.id.dice);
-        dice.setBackgroundResource(R.drawable.dice_animation);
-        rollAnimation = (AnimationDrawable) dice.getBackground();
-        fakeDice = (ImageView) findViewById(R.id.fake_dice);
-        fakeDice.setVisibility(View.INVISIBLE);
+        initDice();
 
         setShortcuts();
         shortcuts = new ShortcutManager(boardGrid, shortcutImages, game.getBoard());
         shortsInplace = true;
         pawnInPlace = false;
+    }
 
+    private void initDice() {
+        dice = (ImageView) findViewById(R.id.dice);
+        dice.setBackgroundResource(R.drawable.dice_animation);
+        rollAnimation = (AnimationDrawable) dice.getBackground();
+        fakeDice = (ImageView) findViewById(R.id.fake_dice);
+        fakeDice.setVisibility(View.INVISIBLE);
         diceSound = MediaPlayer.create(this, R.raw.roll_dice);
     }
 
@@ -151,13 +168,16 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         pManager1.addListener(GameActivity.this);
         pManager2.addListener(GameActivity.this);
         game.addListener(GameActivity.this);
-        dice.setClickable(true);
+        if (player == 0)
+            dice.setClickable(true);
+        else
+            dice.setClickable(false);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Toast t = Toast.makeText(this, "Long Press on the white area to roll the dice.",
+        Toast t = Toast.makeText(this, R.string.directions,
                 Toast.LENGTH_LONG);
         t.show();
     }
@@ -169,8 +189,8 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         pawnInPlace = false;
         Log.i(tag, "Play: " + player);
         if (player == 1) {
-            int steps = players[1].makeMove();
-            game.play(steps);
+            if (mode == 0)
+                game.play(players[1].makeMove());
         } else {
             dice.setClickable(true);
         }
@@ -221,7 +241,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         Log.i(tag, "The winner:" + winner.getName());
         dice.setClickable(false);
         gameStarted = false;
-        Toast t = Toast.makeText(this, winner.getName() + " won!", Toast.LENGTH_LONG);
+        Toast t = Toast.makeText(this, R.string.winner + winner.getName(), Toast.LENGTH_LONG);
         t.show();
     }
 
