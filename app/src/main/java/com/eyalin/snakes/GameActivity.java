@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -189,6 +190,8 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
     @Override
     protected void onStart() {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         if (mode != 0) {
             Intent intent = new Intent(this, Communicator.class);
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
