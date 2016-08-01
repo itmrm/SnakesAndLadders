@@ -592,6 +592,7 @@ public class LoginActivity extends AppCompatActivity implements
     private void startGame() {
         Intent intent = new Intent(this, Communicator.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        mService.setRoomPlayModel(roomPlayModel);
 
         Intent gameIntent = new Intent(LoginActivity.this, GameActivity.class);
         Bundle bundle = new Bundle();
@@ -610,6 +611,15 @@ public class LoginActivity extends AppCompatActivity implements
         gameIntent.putExtra(MULTI_KEY, bundle);
 
         startActivity(gameIntent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
     }
 
 }
