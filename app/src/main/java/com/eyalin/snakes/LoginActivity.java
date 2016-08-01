@@ -561,12 +561,17 @@ public class LoginActivity extends AppCompatActivity implements
     private void startGame() {
         Intent intent = new Intent(LoginActivity.this, GameActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(PLAYER_NAME, "");
-        bundle.putString(FRIEND_NAME, "");
-        if (true)
+        bundle.putString(PLAYER_NAME, roomPlayModel.currentPlayer.getName());
+        String name = "";
+        for (Participant p : RoomPlayModel.roomPlay.getParticipants()) {
+            if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId()))
+                name = p.getPlayer().getName();
+            }
+        bundle.putString(FRIEND_NAME, name);
+        if (roomPlayModel.isCreator)
             bundle.putInt(MODE_KEY, 1);
         else
-            bundle.putInt(MODE_KEY, 0);
+            bundle.putInt(MODE_KEY, 2);
 
         intent.putExtra(MULTI_KEY, bundle);
 

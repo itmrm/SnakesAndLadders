@@ -77,7 +77,7 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
     }
 
     //need to invoke in the end of player's turn
-    private void MakeMove(GameStatus gameStatus) throws IOException {
+    private void makeMove(GameStatus gameStatus) throws IOException {
         //insert any object instead of string, and make sure you parse it in message recieved
         byte[] message =  convertToBytes(gameStatus);
 
@@ -395,6 +395,12 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
     public void makeSteps(int steps) {
         GameStatus gameStatus = new GameStatus();
         gameStatus.steps = steps;
+        try {
+            makeMove(gameStatus);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -417,6 +423,11 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
         GameStatus gameStatus = new GameStatus();
         gameStatus.index = index;
         gameStatus.shortcut = mGame.getBoard().getShortcuts()[index];
+        try {
+            makeMove(gameStatus);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setGame(AbsGame game) {
@@ -427,5 +438,10 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
     public void setShortcuts(Shortcut[] shortcuts) {
         GameStatus gameStatus = new GameStatus();
         gameStatus.shortcuts = shortcuts;
+        try {
+            makeMove(gameStatus);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
