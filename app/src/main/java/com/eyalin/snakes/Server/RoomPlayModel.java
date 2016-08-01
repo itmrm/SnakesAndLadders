@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
         View.OnClickListener,OnInvitationReceivedListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        RealTimeMessageReceivedListener, GameListener {
+        RealTimeMessageReceivedListener, GameListener, Serializable {
 
     final static String tag = "RoomPlayModel";
 
@@ -402,6 +404,7 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
 
     @Override
     public void makeSteps(int steps) {
+        Log.d(tag, "Send steps");
         GameStatus gameStatus = new GameStatus();
         gameStatus.steps = steps;
         try {

@@ -57,6 +57,7 @@ public class LoginActivity extends AppCompatActivity implements
     static final String PLAYER_NAME = "player";
     static final String FRIEND_NAME = "friend";
     static final String MODE_KEY = "GameMode";
+    static final String ROOM = "room";
 
     private Communicator mService;
     private boolean mBound = false;
@@ -65,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements
     private SignInButton btn_SignIn;
     private Button btn_SignOut;
     private Button btn_Invite;
+    private Button btn_StartGame;
     private Button btn_SeeInventations;
 
     boolean mExplicitSignOut = false;
@@ -125,11 +127,13 @@ public class LoginActivity extends AppCompatActivity implements
         btn_SignOut = (Button)findViewById(R.id.sign_out_button);
         btn_Invite = (Button)findViewById(R.id.invite_button);
         btn_SeeInventations = (Button)findViewById(R.id.onInvitationReceived);
+        btn_StartGame = (Button)findViewById(R.id.btnStartGame);
 
 
         btn_SignIn.setOnClickListener(this);
         btn_SignOut.setOnClickListener(this);
         btn_Invite.setOnClickListener(this);
+        btn_StartGame.setOnClickListener(this);
         btn_SeeInventations.setOnClickListener(this);
 
         setOnlineButtonVisibility(false);
@@ -176,7 +180,10 @@ public class LoginActivity extends AppCompatActivity implements
         {
             seeInventations();
         }
-
+        else if(view.getId() == R.id.btnStartGame)
+        {
+            startGame();
+        }
 
     }
 
@@ -464,8 +471,6 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
-
-
     @Override
     public void onPeerLeft(Room room, List<String> peers) {
         // peer left -- see if game should be canceled
@@ -571,24 +576,24 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-            mService.setRoomPlayModel(roomPlayModel);
-        }
+//    private ServiceConnection mConnection = new ServiceConnection() {
+//        @Override
+//        public void onServiceConnected(ComponentName name, IBinder service) {
+//            Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
+//            mService = binder.getService();
+//            mBound = true;
+//            mService.setRoomPlayModel(roomPlayModel);
+//        }
+//
+//        @Override
+//        public void onServiceDisconnected(ComponentName name) {
+//            mBound = false;
+//        }
+//    };
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mBound = false;
-        }
-    };
-
-    public void startGame() {
-        Intent intent = new Intent(this, Communicator.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    private void startGame() {
+//        Intent intent = new Intent(this, Communicator.class);
+//        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
         Intent gameIntent = new Intent(LoginActivity.this, GameActivity.class);
         Bundle bundle = new Bundle();
@@ -604,6 +609,7 @@ public class LoginActivity extends AppCompatActivity implements
         else
             bundle.putInt(MODE_KEY, 2);
 
+        bundle.putSerializable(ROOM, roomPlayModel);
         gameIntent.putExtra(MULTI_KEY, bundle);
 
         startActivity(gameIntent);
@@ -612,10 +618,10 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
+//        if(mBound) {
+//            unbindService(mConnection);
+//            mBound = false;
+//        }
     }
 
 }

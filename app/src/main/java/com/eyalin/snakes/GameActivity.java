@@ -81,6 +81,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             mode = bundle.getInt(LoginActivity.MODE_KEY);
             pName = bundle.getString(LoginActivity.PLAYER_NAME);
             eName = bundle.getString(LoginActivity.FRIEND_NAME);
+            room = (RoomPlayModel) bundle.getSerializable(LoginActivity.ROOM);
         }
         else {
             pName = "Player";
@@ -98,6 +99,8 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             game = new GameFollower(players);
             player = 1;
         }
+        if (room != null)
+            game.addListener(room);
         Log.i(tag, "Game generated.");
 
         pawn1 = (ImageView) findViewById(R.id.pawn1);
@@ -190,11 +193,11 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
     @Override
     protected void onStart() {
-        if (mode != 0) {
-            Intent intent = new Intent(this, Communicator.class);
-            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-            Log.i(tag, "Service Bind.");
-        }
+//        if (mode != 0) {
+//            Intent intent = new Intent(this, Communicator.class);
+//            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+//            Log.e(tag, "Service Bind.");
+//        }
         super.onStart();
 
         Toast t = Toast.makeText(this, R.string.directions,
@@ -311,28 +314,29 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     @Override
     protected void onStop() {
         super.onStop();
-        if(mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
+//        if(mBound) {
+//            unbindService(mConnection);
+//            mBound = false;
+//        }
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        // Called when the connection with the service is established
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-            room = mService.getRoomPlayModel();
-            room.setGame(game);
-            game.addListener(room);
-        }
-
-        // Called when the connection with the service disconnects unexpectedly
-        public void onServiceDisconnected(ComponentName className) {
-            Log.e(tag, "onServiceDisconnected");
-            mBound = false;
-        }
-    };
+//    private ServiceConnection mConnection = new ServiceConnection() {
+//        // Called when the connection with the service is established
+//        public void onServiceConnected(ComponentName className, IBinder service) {
+//            Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
+//            mService = binder.getService();
+//            mBound = true;
+//            room = mService.getRoomPlayModel();
+//            room.setGame(game);
+//            game.addListener(room);
+//            Log.e(tag, "The room is now listening.");
+//        }
+//
+//        // Called when the connection with the service disconnects unexpectedly
+//        public void onServiceDisconnected(ComponentName className) {
+//            Log.e(tag, "onServiceDisconnected");
+//            mBound = false;
+//        }
+//    };
 
 }
