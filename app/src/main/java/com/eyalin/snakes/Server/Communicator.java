@@ -16,20 +16,29 @@ public class Communicator extends Service {
 
     private final IBinder mBinder = new LocalBinder();
     private ArrayList<ServerListener> mListeners;
+    private RoomPlayModel roomPlayModel;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        // Get the ACCELEROMETER sensore.
 
         mListeners = new ArrayList<>();
         Log.e(tag, "onCreate.");
     }
 
+
     @Override
     public IBinder onBind(Intent intent) {
         Log.e(tag, "Activity bind");
         return mBinder;
+    }
+
+    public void setRoomPlayModel(RoomPlayModel room) {
+        roomPlayModel = room;
+    }
+
+    public RoomPlayModel getRoomPlayModel() {
+        return roomPlayModel;
     }
 
     public void addListener(ServerListener listener) {
