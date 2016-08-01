@@ -33,21 +33,23 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:id="@+id/single_player"
             android:text="@string/single_player"
-            style="@style/Widget.AppCompat.ButtonBar" />
+            android:textSize="@dimen/font_size"
+            style="@style/Widget.AppCompat.ButtonBar"
+            android:nestedScrollingEnabled="false"
+            android:onClick="onSinglePlayerClicked" />
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:id="@+id/multi_player"
             android:text="@string/multi_player"
-            style="@style/Widget.AppCompat.ButtonBar" />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/exit"
-            android:text="@string/exit"
-            style="@style/Widget.AppCompat.ButtonBar" />
+            android:textSize="@dimen/font_size"
+            style="@style/Widget.AppCompat.ButtonBar"
+            android:onClick="onMultiPlayerClicked" />
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/game_vertical_margin"
+    android:paddingLeft="@dimen/game_horizontal_margin"
+    android:paddingRight="@dimen/game_horizontal_margin"
+    android:paddingTop="@dimen/game_vertical_margin"
     tools:context=".GameActivity">
 
     <GridView
@@ -14,6 +14,53 @@
         android:layout_height="wrap_content"
         android:id="@+id/board_grid"
         android:numColumns="10" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dice"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fake_dice"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <com.eyalin.snakes.UI.ShortcutView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut0" />
+    <com.eyalin.snakes.UI.ShortcutView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut1" />
+    <com.eyalin.snakes.UI.ShortcutView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut2" />
+    <com.eyalin.snakes.UI.ShortcutView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut3" />
+    <com.eyalin.snakes.UI.ShortcutView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut4" />
+    <com.eyalin.snakes.UI.ShortcutView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut5" />
+    <com.eyalin.snakes.UI.ShortcutView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut6" />
+    <com.eyalin.snakes.UI.ShortcutView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut7" />
+
     <ImageView
         android:layout_width="30dp"
         android:layout_height="30dp"
@@ -30,51 +77,5 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/lemon_pawn"
         android:visibility="visible" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dice"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fake_dice"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-
-    <com.example.user.snakesladders.UI.ShortcutView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortcut0" />
-    <com.example.user.snakesladders.UI.ShortcutView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortcut1" />
-    <com.example.user.snakesladders.UI.ShortcutView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortcut2" />
-    <com.example.user.snakesladders.UI.ShortcutView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortcut3" />
-    <com.example.user.snakesladders.UI.ShortcutView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortcut4" />
-    <com.example.user.snakesladders.UI.ShortcutView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortcut5" />
-    <com.example.user.snakesladders.UI.ShortcutView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortcut6" />
-    <com.example.user.snakesladders.UI.ShortcutView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/shortcut7" />
 
 </RelativeLayout>
