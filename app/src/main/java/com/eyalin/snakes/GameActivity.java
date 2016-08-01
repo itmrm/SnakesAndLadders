@@ -190,6 +190,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             room = mService.getRoomPlayModel();
             room.setGame(game);
             game.addListener(room);
+            Log.i(tag, "Service Bind.");
         }
         super.onStart();
 
