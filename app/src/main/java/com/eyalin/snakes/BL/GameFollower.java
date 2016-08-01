@@ -82,6 +82,12 @@ public class GameFollower implements AbsGame {
     }
 
     @Override
+    public void setShortcut(Shortcut shortcut, int index) {
+        board.getShortcuts()[index] = shortcut;
+        fireShortcutChanged(index);
+    }
+
+    @Override
     public void addListener(GameListener listener) {
         listeners.add(listener);
     }

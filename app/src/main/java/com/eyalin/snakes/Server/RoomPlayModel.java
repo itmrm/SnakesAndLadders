@@ -5,15 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eyalin.snakes.BL.AbsGame;
+import com.eyalin.snakes.BL.Shortcut;
 import com.eyalin.snakes.Listeners.GameListener;
 import com.eyalin.snakes.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
@@ -40,7 +38,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +62,9 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
     public boolean mPlaying = false;
     public String mRoomId = "2";
     private  Context mContext;
+
     int GamePlayerStatus = 0; // 0 - single player, 1 - leader, 2 - follower.
+    private AbsGame mGame;
 
     public RoomPlayModel(Context context) {
         this.mContext = context;
@@ -224,10 +223,17 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
 
-
         try {
             GameStatus gameStatus = (GameStatus)convertFromBytes(realTimeMessage.getMessageData());
-            //send gameStatus to any function;
+            if (gameStatus.steps != 0)
+                mGame.play(gameStatus.steps);
+            else if (gameStatus.index != -1)
+                mGame.setShortcut(gameStatus.shortcut, gameStatus.index);
+            else {
+                int length = gameStatus.shortcuts.length;
+                for (int i = 0; i < length; i++)
+                    mGame.setShortcut(gameStatus.shortcuts[i], i);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -387,7 +393,8 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
 
     @Override
     public void makeSteps(int steps) {
-
+        GameStatus gameStatus = new GameStatus();
+        gameStatus.steps = steps;
     }
 
     @Override
@@ -407,6 +414,18 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
 
     @Override
     public void shortcutChange(int index) {
+        GameStatus gameStatus = new GameStatus();
+        gameStatus.index = index;
+        gameStatus.shortcut = mGame.getBoard().getShortcuts()[index];
+    }
 
+    public void setGame(AbsGame game) {
+        mGame = game;
+        mGame.addListener(this);
+    }
+
+    public void setShortcuts(Shortcut[] shortcuts) {
+        GameStatus gameStatus = new GameStatus();
+        gameStatus.shortcuts = shortcuts;
     }
 }

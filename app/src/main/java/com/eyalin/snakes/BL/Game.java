@@ -76,7 +76,7 @@ public class Game implements AbsGame {
             l.makeSteps(place);
     }
 
-    private void changeTurn() {
+    public void changeTurn() {
         for (GameListener l : listeners)
             l.turnChanged();
     }
@@ -106,6 +106,11 @@ public class Game implements AbsGame {
     @Override
     public Board getBoard() {
         return board;
+    }
+
+    @Override
+    public void setShortcut(Shortcut shortcut ,int index) {
+
     }
 
     @Override
