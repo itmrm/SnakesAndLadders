@@ -14,10 +14,44 @@
         android:layout_height="wrap_content"
         android:id="@+id/board_grid"
         android:numColumns="10" />
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/board_grid"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/board_grid"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="@dimen/font_size"
+            android:text="@string/player"
+            android:id="@+id/player_name" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="28dp"
+            android:text="@string/vs"
+            android:id="@+id/vs" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/phone"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="@dimen/font_size"
+            android:id="@+id/friend_name" />
+
+    </LinearLayout>
 
     <ImageView
         android:layout_width="wrap_content"

@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eyalin.snakes.BL.AbsGame;
@@ -51,6 +52,8 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private PawnManager pManager2;
     private ImageView dice;
     private ImageView fakeDice;
+    private ImageView playerBnr;
+    private ImageView friendBnr;
     private MediaPlayer diceSound;
     private AnimationDrawable rollAnimation;
     private int player;
@@ -79,10 +82,12 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             eName = bundle.getString(LoginActivity.FRIEND_NAME);
         }
         else {
-            pName = String.valueOf(R.string.player);
-            eName = String.valueOf(R.string.phone);
+            pName = "Player";
+            eName = "Phone";
         }
         players = new Player[]{new Player(pName), new Player(eName)};
+        ((TextView) findViewById(R.id.player_name)).setText(pName);
+        ((TextView) findViewById(R.id.friend_name)).setText(eName);
         Log.i(tag, "Players set.");
         if (mode != 2) {
             game = new Game(players);
