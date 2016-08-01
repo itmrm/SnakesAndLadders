@@ -18,6 +18,7 @@ public class GameFollower implements AbsGame {
     public GameFollower(Player[] players) {
         mPlayers = players;
         board = new Board();
+        listeners = new ArrayList<>();
     }
 
     @Override
