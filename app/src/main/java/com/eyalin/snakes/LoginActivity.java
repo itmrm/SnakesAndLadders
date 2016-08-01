@@ -1,11 +1,8 @@
 package com.eyalin.snakes;
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -19,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.eyalin.snakes.Server.Communicator;
 import com.eyalin.snakes.Server.RoomPlayModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
@@ -57,9 +53,6 @@ public class LoginActivity extends AppCompatActivity implements
     static final String PLAYER_NAME = "player";
     static final String FRIEND_NAME = "friend";
     static final String MODE_KEY = "GameMode";
-
-    private Communicator mService;
-    boolean mBound = false;
 
     //Buttons
     private SignInButton btn_SignIn;
@@ -200,8 +193,6 @@ public class LoginActivity extends AppCompatActivity implements
             // auto sign in
             RoomPlayModel.mGoogleApiClient.connect();
         }
-        Intent intent = new Intent(this, Communicator.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -226,10 +217,6 @@ public class LoginActivity extends AppCompatActivity implements
     protected void onStop() {
         super.onStop();
         RoomPlayModel.mGoogleApiClient.disconnect();
-        if(mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
         ((TextView)findViewById(R.id.lbHeader)).setText("not connected" );
     }
 
@@ -552,20 +539,17 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
-    private void setOnlineButtonVisibility(boolean isOnline)
-    {
+    private void setOnlineButtonVisibility(boolean isOnline) {
         //here we handle the multi player.
         //if isOnline true, so this player is online
 
-        if (  isOnline  )
-        {
+        if (  isOnline  ) {
             btn_SignOut.setVisibility(View.VISIBLE);
             btn_SignIn.setVisibility(View.GONE);
             btn_Invite.setVisibility(View.VISIBLE);
             btn_SeeInventations.setVisibility(View.VISIBLE);
         }
-        else
-        {
+        else {
             btn_SignOut.setVisibility(View.GONE);
             btn_SignIn.setVisibility(View.VISIBLE);
             btn_Invite.setVisibility(View.GONE);
@@ -574,21 +558,19 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
-    //###########################################################################################
-    //service methods
-    //###########################################################################################
+    private void startGame() {
+        Intent intent = new Intent(LoginActivity.this, GameActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(PLAYER_NAME, "");
+        bundle.putString(FRIEND_NAME, "");
+        if (true)
+            bundle.putInt(MODE_KEY, 1);
+        else
+            bundle.putInt(MODE_KEY, 0);
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-        }
+        intent.putExtra(MULTI_KEY, bundle);
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mBound = false;
-        }
-    };
+        startActivity(intent);
+    }
+
 }
