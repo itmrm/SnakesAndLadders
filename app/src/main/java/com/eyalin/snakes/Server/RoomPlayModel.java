@@ -327,10 +327,17 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
     @Override
     public void onPeerLeft(Room room, List<String> list) {
         // peer left -- see if game should be canceled
-        if (!mPlaying && shouldCancelGame(room)) {
-            Games.RealTimeMultiplayer.leave(RoomPlayModel.mGoogleApiClient, null, mRoomId);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        try {
+            if (!mPlaying && shouldCancelGame(room)) {
+                Games.RealTimeMultiplayer.leave(RoomPlayModel.mGoogleApiClient, null, mRoomId);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
         }
+        catch (Exception ex)
+        {
+
+        }
+
     }
 
     @Override
