@@ -147,12 +147,13 @@ public class LoginActivity extends AppCompatActivity implements
 
 
             // start the sign-in flow
-            Log.d(tag , "Sign-in button8 clicked");
+            Log.d(tag, "Sign-in button8 clicked");
             mSignInClicked = true;
             RoomPlayModel.mGoogleApiClient.connect();
+
         }
-            else if (view.getId() == R.id.sign_out_button) {
-            // sign out.
+        else if (view.getId() == R.id.sign_out_button) {
+        // sign out.
             mSignInClicked = false;
             try {
                 boolean test =RoomPlayModel. mGoogleApiClient.isConnected();
@@ -163,7 +164,6 @@ public class LoginActivity extends AppCompatActivity implements
             } catch (Throwable e) {
                 e.printStackTrace();
             }
-
         }
         else if(view.getId() == R.id.invite_button)
         {
@@ -287,6 +287,7 @@ public class LoginActivity extends AppCompatActivity implements
                 RoomPlayModel.mGoogleApiClient.connect();
             }
         }
+        Log.e(tag, "Connection Failed, error Code: " + errorCode);
 
     }
     @Override
