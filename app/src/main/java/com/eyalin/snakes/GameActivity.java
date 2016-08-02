@@ -208,6 +208,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private void play() {
         if (player == 0) {
             playerTxt.setBackgroundColor(Color.RED);
+
             phoneTxt.setBackgroundColor(Color.WHITE);
         }
         else {

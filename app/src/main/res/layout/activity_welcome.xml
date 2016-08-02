@@ -7,8 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.eyalin.snakes.WelcomeActivity"
-    android:background="@android:color/holo_green_light">
+    android:background="@drawable/main_background"
+    tools:context="com.eyalin.snakes.WelcomeActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,19 +36,32 @@
             android:layout_marginBottom="10dp"
             android:id="@+id/single_player"
             android:text="@string/single_player"
-            android:textSize="@dimen/font_size"
             style="@style/Widget.AppCompat.ButtonBar"
             android:nestedScrollingEnabled="false"
-            android:onClick="onSinglePlayerClicked" />
+            android:onClick="onSinglePlayerClicked"
+            android:background="@drawable/buttonshape"
+            android:shadowColor="#A8A8A8"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:id="@+id/multi_player"
             android:text="@string/multi_player"
-            android:textSize="@dimen/font_size"
             style="@style/Widget.AppCompat.ButtonBar"
-            android:onClick="onMultiPlayerClicked" />
+            android:onClick="onMultiPlayerClicked"
+            android:background="@drawable/buttonshape"
+            android:shadowColor="#A8A8A8"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            />
 
     </LinearLayout>
 
