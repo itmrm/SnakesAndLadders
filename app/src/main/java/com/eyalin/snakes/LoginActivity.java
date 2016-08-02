@@ -2,6 +2,7 @@ package com.eyalin.snakes;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -35,6 +36,7 @@ import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListene
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.plus.Plus;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -226,7 +228,7 @@ public class LoginActivity extends AppCompatActivity implements
     public void onConnected(Bundle connectionHint) {
         setOnlineButtonVisibility(true);
         // Show sign-out button on main menu
-        roomPlayModel = new RoomPlayModel(this);
+        roomPlayModel = RoomPlayModel.getInstance(this);
         // show sign-out button, hide the sign-in button
         findViewById(R.id.sign_in_button).setVisibility(View.GONE);
         findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);

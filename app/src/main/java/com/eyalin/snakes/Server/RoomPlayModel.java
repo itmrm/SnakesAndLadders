@@ -52,7 +52,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         RealTimeMessageReceivedListener, GameListener {
 
     final static String tag = "RoomPlayModel";
-
+    private static RoomPlayModel roomPlayModel;
     public static Room roomPlay;
     public static Player currentPlayer;
     public static boolean isCreator = true;
@@ -74,6 +74,16 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
         initialVariables();
     }
+
+    public static RoomPlayModel getInstance(Context context)
+    {
+        if (roomPlayModel == null)
+        {
+            roomPlayModel = new RoomPlayModel(context);
+        }
+        return roomPlayModel;
+    }
+
 
     private void initialVariables() {
         isCreator = true;

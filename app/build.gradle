@@ -41,4 +41,5 @@ dependencies {
     compile "com.google.android.gms:play-services-plus:${gms_library_version}"
     testCompile 'junit:junit:4.12'
     compile 'junit:junit:4.12'
+
 }

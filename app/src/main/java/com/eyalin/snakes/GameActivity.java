@@ -26,6 +26,7 @@ import com.eyalin.snakes.UI.BoardAdapter;
 import com.eyalin.snakes.UI.PawnManager;
 import com.eyalin.snakes.UI.ShortcutManager;
 import com.eyalin.snakes.UI.ShortcutView;
+import com.google.android.gms.games.multiplayer.realtime.Room;
 
 import org.w3c.dom.Text;
 
@@ -34,7 +35,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
     final static String tag = "GameActivity";
 
-    private RoomPlayModel room;
     private int mode;
 
     private AbsGame game;
@@ -57,6 +57,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private boolean pawnInPlace;
     private TextView playerTxt;
     private TextView phoneTxt;
+    private RoomPlayModel roomPlayModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         Log.i(tag, "Layout set.");
+        roomPlayModel = RoomPlayModel.getInstance(this);
 
         mode = 0;
         String pName;
