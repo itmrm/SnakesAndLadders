@@ -26,13 +26,11 @@ public class GameFollower implements AbsGame {
         Log.i(tag, "Start play turn of " + turn + ", Num of steps: " + steps);
         int place = mPlayers[turn].getPlace() + steps;
         Log.i(tag, "Place: " + place);
-        if (place == 99) {
-            updateSteps(place);
+        if (place >= 99) {
+            updateSteps(99);
             updateWin();
             return;
         } else {
-            if (place > 99)
-                place = 198 - place;
             updateSteps(place);
             mPlayers[turn].setPlace(place);
             Shortcut shortcut = board.getTile(place).getShortcut();

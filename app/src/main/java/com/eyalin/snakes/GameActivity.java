@@ -51,7 +51,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private AnimationDrawable rollAnimation;
     private int player;
     private ShortcutManager shortcuts;
-    private ShortcutView[] shortcutImages;
+    private ImageView[] shortcutImages;
     private boolean gameStarted = false;
     private boolean shortsInplace;
     private boolean pawnInPlace;
@@ -162,15 +162,23 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     }
 
     private void setShortcuts() {
-        shortcutImages = new ShortcutView[8];
-        shortcutImages[0] = (ShortcutView) findViewById(R.id.shortcut0);
-        shortcutImages[1] = (ShortcutView) findViewById(R.id.shortcut1);
-        shortcutImages[2] = (ShortcutView) findViewById(R.id.shortcut2);
-        shortcutImages[3] = (ShortcutView) findViewById(R.id.shortcut3);
-        shortcutImages[4] = (ShortcutView) findViewById(R.id.shortcut4);
-        shortcutImages[5] = (ShortcutView) findViewById(R.id.shortcut5);
-        shortcutImages[6] = (ShortcutView) findViewById(R.id.shortcut6);
-        shortcutImages[7] = (ShortcutView) findViewById(R.id.shortcut7);
+        shortcutImages = new ImageView[16];
+        shortcutImages[0] = (ImageView) findViewById(R.id.shortcut0);
+        shortcutImages[1] = (ImageView) findViewById(R.id.shortcut1);
+        shortcutImages[2] = (ImageView) findViewById(R.id.shortcut2);
+        shortcutImages[3] = (ImageView) findViewById(R.id.shortcut3);
+        shortcutImages[4] = (ImageView) findViewById(R.id.shortcut4);
+        shortcutImages[5] = (ImageView) findViewById(R.id.shortcut5);
+        shortcutImages[6] = (ImageView) findViewById(R.id.shortcut6);
+        shortcutImages[7] = (ImageView) findViewById(R.id.shortcut7);
+        shortcutImages[8] = (ImageView) findViewById(R.id.shortcut8);
+        shortcutImages[9] = (ImageView) findViewById(R.id.shortcut9);
+        shortcutImages[10] = (ImageView) findViewById(R.id.shortcut10);
+        shortcutImages[11] = (ImageView) findViewById(R.id.shortcut11);
+        shortcutImages[12] = (ImageView) findViewById(R.id.shortcut12);
+        shortcutImages[13] = (ImageView) findViewById(R.id.shortcut13);
+        shortcutImages[14] = (ImageView) findViewById(R.id.shortcut14);
+        shortcutImages[15] = (ImageView) findViewById(R.id.shortcut15);
     }
 
     @Override

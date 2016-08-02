@@ -66,38 +66,86 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-    <com.eyalin.snakes.UI.ShortcutView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/shortcut0" />
-    <com.eyalin.snakes.UI.ShortcutView
+        android:id="@+id/shortcut0"
+        android:src="@drawable/ladder"/>
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/shortcut1" />
-    <com.eyalin.snakes.UI.ShortcutView
+        android:id="@+id/shortcut1"
+        android:src="@drawable/ladder_1"/>
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/shortcut2" />
-    <com.eyalin.snakes.UI.ShortcutView
+        android:id="@+id/shortcut2"
+        android:src="@drawable/ladder_2"/>
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/shortcut3" />
-    <com.eyalin.snakes.UI.ShortcutView
+        android:id="@+id/shortcut3"
+        android:src="@drawable/ladder_3"/>
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/shortcut4" />
-    <com.eyalin.snakes.UI.ShortcutView
+        android:id="@+id/shortcut4"
+        android:src="@drawable/snake"/>
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/shortcut5" />
-    <com.eyalin.snakes.UI.ShortcutView
+        android:id="@+id/shortcut5"
+        android:src="@drawable/snake_1"/>
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/shortcut6" />
-    <com.eyalin.snakes.UI.ShortcutView
+        android:id="@+id/shortcut6"
+        android:src="@drawable/snake_2"/>
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/shortcut7" />
+        android:id="@+id/shortcut7"
+        android:src="@drawable/snake_3"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut8"
+        android:src="@drawable/ladder"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut9"
+        android:src="@drawable/ladder_1"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut10"
+        android:src="@drawable/ladder_2"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut11"
+        android:src="@drawable/ladder_3"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut12"
+        android:src="@drawable/snake"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut13"
+        android:src="@drawable/snake_1"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut14"
+        android:src="@drawable/snake_2"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/shortcut15"
+        android:src="@drawable/snake_3"/>
 
     <ImageView
         android:layout_width="30dp"

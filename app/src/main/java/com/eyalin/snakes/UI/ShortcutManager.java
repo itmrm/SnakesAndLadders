@@ -21,30 +21,23 @@ public class ShortcutManager implements Animator.AnimatorListener {
     final static String tag = "ShortcutManager";
 
     private Shortcut[] mShortcuts;
-    private ShortcutView[] mImages;
+    private ImageView[] mImages;
+    private final int LENGTH;
     private Board mBoard;
     private GridView mGrid;
     private ArrayList<ShortListener> listeners;
 
-    public ShortcutManager(GridView grid, ShortcutView[] images, Board board) {
+    public ShortcutManager(GridView grid, ImageView[] images, Board board) {
         mBoard = board;
         mGrid = grid;
         mImages = images;
+        LENGTH = mImages.length / 2;
         mShortcuts = mBoard.getShortcuts();
         listeners = new ArrayList<>();
     }
 
     public void initShortcuts() {
         for (int i = 0; i < 8; i++) {
-            int num = mShortcuts[i].getmEnter().getNum();
-            View view = mGrid.getChildAt(0);
-            int x = view.getWidth();
-            int y = view.getHeight();
-            Log.i(tag, "Setting Image no." + i + ", Width: " + x + "Heigth: " + y + ".");
-            if (i < 4)
-                mImages[i].setParameters(x, y, ShortType.LADDER, num);
-            else
-                mImages[i].setParameters(x, y, ShortType.SNAKE, num);
             placeShortcut(i);
         }
     }
@@ -52,13 +45,26 @@ public class ShortcutManager implements Animator.AnimatorListener {
     private void placeShortcut(int i) {
         int place = mShortcuts[i].getmEnter().getNum();
         place = (int) mGrid.getAdapter().getItemId(place);
-        View view = mGrid.getChildAt(place);
+        View enter = mGrid.getChildAt(place);
+        int x = enter.getWidth();
+        int y = enter.getHeight();
+        mImages[i].getLayoutParams().width = x;
+        mImages[i].getLayoutParams().height = y;
+        mImages[i].requestLayout();
         int target = mShortcuts[i].getExit().getNum();
-        mImages[i].setNumber(target);
-        mImages[i].invalidate();
-        mImages[i].animate().x(view.getLeft() + 30).y(view.getTop() + 30);
-        mImages[i].animate().setDuration(1000).setListener(this);
+        target = (int) mGrid.getAdapter().getItemId(target);
+        View exit = mGrid.getChildAt(target);
+        mImages[i + LENGTH].getLayoutParams().width = x;
+        mImages[i + LENGTH].getLayoutParams().height = y;
+        mImages[i + LENGTH].requestLayout();
+        mImages[i].animate().x(enter.getLeft()).y(enter.getTop());
+        mImages[i].animate().setDuration(1000);
         mImages[i].animate().start();
+
+        mImages[i + LENGTH].requestLayout();
+        mImages[i + LENGTH].animate().x(exit.getLeft()).y(exit.getTop());
+        mImages[i + LENGTH].animate().setDuration(1000).setListener(this);
+        mImages[i + LENGTH].animate().start();
     }
 
     public void updateShortcut(int num) {
