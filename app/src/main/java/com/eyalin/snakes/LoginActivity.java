@@ -1,11 +1,7 @@
 package com.eyalin.snakes;
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -19,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.eyalin.snakes.Server.Communicator;
 import com.eyalin.snakes.Server.RoomPlayModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
@@ -59,14 +54,10 @@ public class LoginActivity extends AppCompatActivity implements
     static final String MODE_KEY = "GameMode";
     static final String ROOM = "room";
 
-    private Communicator mService;
-    private boolean mBound = false;
-
     //Buttons
     private SignInButton btn_SignIn;
     private Button btn_SignOut;
     private Button btn_Invite;
-    private Button btn_StartGame;
     private Button btn_SeeInventations;
 
     boolean mExplicitSignOut = false;
@@ -75,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements
     private RoomPlayModel roomPlayModel;
     final static int RC_WAITING_ROOM = 10002;
     private String mRoomId = "2";
-   // private GoogleApiClient mGoogleApiClient;
+    // private GoogleApiClient mGoogleApiClient;
     private static int RC_SIGN_IN = 9001;
     final static int RC_INVITATION_INBOX = 10001;
     private boolean mResolvingConnectionFailure = false;
@@ -86,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements
     private static final long ROLE_1 = 0x1; // 001 in binary
     private static final long ROLE_2 = 0x2; // 010 in binary
     private static final long ROLE_WIZARD = 0x4; // 100 in binary
-   // private  Player currentPlayer;
+    // private  Player currentPlayer;
     final static int RC_SELECT_PLAYERS = 10000;
     private  String mIncomingInvitationId;
     private   Button button;
@@ -127,20 +118,18 @@ public class LoginActivity extends AppCompatActivity implements
         btn_SignOut = (Button)findViewById(R.id.sign_out_button);
         btn_Invite = (Button)findViewById(R.id.invite_button);
         btn_SeeInventations = (Button)findViewById(R.id.onInvitationReceived);
-        btn_StartGame = (Button)findViewById(R.id.btnStartGame);
 
 
         btn_SignIn.setOnClickListener(this);
         btn_SignOut.setOnClickListener(this);
         btn_Invite.setOnClickListener(this);
-        btn_StartGame.setOnClickListener(this);
         btn_SeeInventations.setOnClickListener(this);
 
         setOnlineButtonVisibility(false);
 
 
         //button.setEnabled(false);
-       // editText.setInputType(InputType.TYPE_NULL);
+        // editText.setInputType(InputType.TYPE_NULL);
     }
 
     @Override
@@ -158,12 +147,12 @@ public class LoginActivity extends AppCompatActivity implements
 
         }
         else if (view.getId() == R.id.sign_out_button) {
-        // sign out.
+            // sign out.
             mSignInClicked = false;
             try {
                 boolean test =RoomPlayModel. mGoogleApiClient.isConnected();
                 Games.signOut(RoomPlayModel.mGoogleApiClient);
-            // show sign-out button, hide the sign-in button
+                // show sign-out button, hide the sign-in button
                 findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
                 findViewById(R.id.sign_out_button).setVisibility(View.GONE);
             } catch (Throwable e) {
@@ -180,27 +169,24 @@ public class LoginActivity extends AppCompatActivity implements
         {
             seeInventations();
         }
-        else if(view.getId() == R.id.btnStartGame)
-        {
-            startGame();
-        }
+
 
     }
 
     //need to invoke in the end of player's turn
-   private void endTurn()
-   {
-       //insert any object instead of string, and make sure you parse it in message recieved
-       byte[] message = editText.getText().toString().getBytes();
+    private void endTurn()
+    {
+        //insert any object instead of string, and make sure you parse it in message recieved
+        byte[] message = editText.getText().toString().getBytes();
 
 
-       for (Participant p : RoomPlayModel.roomPlay.getParticipants()) {
-           if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId())) {
-               Games.RealTimeMultiplayer.sendReliableMessage(RoomPlayModel.mGoogleApiClient, this, message,
-                       RoomPlayModel.roomPlay.getRoomId(), p.getParticipantId());
-           }
-       }
-   }
+        for (Participant p : RoomPlayModel.roomPlay.getParticipants()) {
+            if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId())) {
+                Games.RealTimeMultiplayer.sendReliableMessage(RoomPlayModel.mGoogleApiClient, this, message,
+                        RoomPlayModel.roomPlay.getRoomId(), p.getParticipantId());
+            }
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -393,7 +379,7 @@ public class LoginActivity extends AppCompatActivity implements
             // display error
             return;
         }
-    //    roomPlay = room;
+        //    roomPlay = room;
         // get waiting room intent
         Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
         startActivityForResult(i, RC_WAITING_ROOM);
@@ -416,7 +402,7 @@ public class LoginActivity extends AppCompatActivity implements
         editText.setInputType(InputType.TYPE_CLASS_TEXT);
         button.setEnabled(true);
         RoomPlayModel.roomPlay = room;
-       // roomPlay = room;
+        // roomPlay = room;
         // show error message, return to main screen.
     }
 
@@ -470,6 +456,8 @@ public class LoginActivity extends AppCompatActivity implements
     public void onP2PDisconnected(String s) {
 
     }
+
+
 
     @Override
     public void onPeerLeft(Room room, List<String> peers) {
@@ -576,25 +564,8 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
-//    private ServiceConnection mConnection = new ServiceConnection() {
-//        @Override
-//        public void onServiceConnected(ComponentName name, IBinder service) {
-//            Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
-//            mService = binder.getService();
-//            mBound = true;
-//            mService.setRoomPlayModel(roomPlayModel);
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName name) {
-//            mBound = false;
-//        }
-//    };
 
-    private void startGame() {
-//        Intent intent = new Intent(this, Communicator.class);
-//        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-
+    public void startGame() {
         Intent gameIntent = new Intent(LoginActivity.this, GameActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PLAYER_NAME, roomPlayModel.currentPlayer.getName());
@@ -602,15 +573,15 @@ public class LoginActivity extends AppCompatActivity implements
         for (Participant p : RoomPlayModel.roomPlay.getParticipants()) {
             if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId()))
                 name = p.getPlayer().getName();
-            }
+        }
         bundle.putString(FRIEND_NAME, name);
         if (roomPlayModel.isCreator)
             bundle.putInt(MODE_KEY, 1);
         else
             bundle.putInt(MODE_KEY, 2);
 
-        bundle.putSerializable(ROOM, roomPlayModel);
         gameIntent.putExtra(MULTI_KEY, bundle);
+        gameIntent.putExtra(ROOM, roomPlayModel);
 
         startActivity(gameIntent);
     }
@@ -618,10 +589,6 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if(mBound) {
-//            unbindService(mConnection);
-//            mBound = false;
-//        }
     }
 
 }

@@ -1,18 +1,13 @@
 package com.eyalin.snakes;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,7 +20,6 @@ import com.eyalin.snakes.BL.Player;
 import com.eyalin.snakes.Listeners.GameListener;
 import com.eyalin.snakes.Listeners.PawnListener;
 import com.eyalin.snakes.Listeners.ShortListener;
-import com.eyalin.snakes.Server.Communicator;
 import com.eyalin.snakes.Server.RoomPlayModel;
 import com.eyalin.snakes.UI.BoardAdapter;
 import com.eyalin.snakes.UI.PawnManager;
@@ -39,9 +33,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
     private RoomPlayModel room;
     private int mode;
-
-    private Communicator mService;
-    private boolean mBound = false;
 
     private AbsGame game;
     private Player[] players;
@@ -81,7 +72,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             mode = bundle.getInt(LoginActivity.MODE_KEY);
             pName = bundle.getString(LoginActivity.PLAYER_NAME);
             eName = bundle.getString(LoginActivity.FRIEND_NAME);
-            room = (RoomPlayModel) bundle.getSerializable(LoginActivity.ROOM);
         }
         else {
             pName = "Player";
@@ -99,8 +89,11 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             game = new GameFollower(players);
             player = 1;
         }
-        if (room != null)
+        room = (RoomPlayModel) intent.getSerializableExtra(LoginActivity.ROOM);
+        if (room != null) {
+            room.setGame(game);
             game.addListener(room);
+        }
         Log.i(tag, "Game generated.");
 
         pawn1 = (ImageView) findViewById(R.id.pawn1);
@@ -193,13 +186,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
     @Override
     protected void onStart() {
-//        if (mode != 0) {
-//            Intent intent = new Intent(this, Communicator.class);
-//            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-//            Log.e(tag, "Service Bind.");
-//        }
         super.onStart();
-
         Toast t = Toast.makeText(this, R.string.directions,
                 Toast.LENGTH_LONG);
         t.show();
@@ -310,33 +297,5 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         if(gameStarted)
             play();
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-//        if(mBound) {
-//            unbindService(mConnection);
-//            mBound = false;
-//        }
-    }
-
-//    private ServiceConnection mConnection = new ServiceConnection() {
-//        // Called when the connection with the service is established
-//        public void onServiceConnected(ComponentName className, IBinder service) {
-//            Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
-//            mService = binder.getService();
-//            mBound = true;
-//            room = mService.getRoomPlayModel();
-//            room.setGame(game);
-//            game.addListener(room);
-//            Log.e(tag, "The room is now listening.");
-//        }
-//
-//        // Called when the connection with the service disconnects unexpectedly
-//        public void onServiceDisconnected(ComponentName className) {
-//            Log.e(tag, "onServiceDisconnected");
-//            mBound = false;
-//        }
-//    };
 
 }
