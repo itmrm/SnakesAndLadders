@@ -581,7 +581,6 @@ public class LoginActivity extends AppCompatActivity implements
             bundle.putInt(MODE_KEY, 2);
 
         gameIntent.putExtra(MULTI_KEY, bundle);
-        gameIntent.putExtra(ROOM, roomPlayModel);
 
         startActivity(gameIntent);
     }

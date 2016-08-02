@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -43,7 +44,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdateListener,
+public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdateListener,
         RoomUpdateListener,RealTimeMultiplayer.ReliableMessageSentCallback,
         View.OnClickListener,OnInvitationReceivedListener,
         GoogleApiClient.ConnectionCallbacks,
