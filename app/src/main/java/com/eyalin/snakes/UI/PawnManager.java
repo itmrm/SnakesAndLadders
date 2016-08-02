@@ -29,14 +29,16 @@ public class PawnManager implements Animator.AnimatorListener {
     private Player mPlayer;
     private ArrayList<Integer> nextSeps;
     private boolean win;
+    private View mDice;
 
-    public PawnManager(ImageView pawn, GridView board,Player player, int div) {
+    public PawnManager(ImageView pawn, GridView board,Player player, int div, View dice) {
         mPawn = pawn;
         mGrid = board;
         location = 0;
         mPlayer = player;
         DIV = div;
         win = false;
+        mDice = dice;
         listeners = new ArrayList<>();
         mPawn.animate().setListener(this);
         nextSeps = new ArrayList<>();
@@ -83,9 +85,8 @@ public class PawnManager implements Animator.AnimatorListener {
     }
 
     private void winDance() {
-        View view = mGrid.getChildAt(54);
-        xPos = view.getLeft();
-        yPos = view.getTop();
+        xPos = mDice.getLeft() + 30;
+        yPos = mDice.getTop() - 50;
         mPawn.setMinimumHeight(100);
         mPawn.setMinimumWidth(100);
         mPawn.invalidate();

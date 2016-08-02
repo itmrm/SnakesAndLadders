@@ -17,6 +17,7 @@
     <string name="player">Player</string>
     <string name="phone">Phone</string>
     <string name="vs">VS</string>
+    <string name="is_winner">Winner</string>
     <string name="directions">Long Press on the white area to roll the dice.</string>
     <string name="winner">The winner is: </string>
 

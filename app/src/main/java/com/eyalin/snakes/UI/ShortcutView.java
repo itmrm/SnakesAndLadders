@@ -69,7 +69,7 @@ public class ShortcutView extends View {
         number = num + 1;
         numberPaint = new Paint();
         numberPaint.setColor(Color.BLUE);
-        numberPaint.setTextSize(35);
+        numberPaint.setTextSize(30);
         numberPaint.setFakeBoldText(true);
     }
 

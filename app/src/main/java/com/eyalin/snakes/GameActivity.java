@@ -1,6 +1,7 @@
 package com.eyalin.snakes;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,8 @@ import com.eyalin.snakes.UI.PawnManager;
 import com.eyalin.snakes.UI.ShortcutManager;
 import com.eyalin.snakes.UI.ShortcutView;
 
+import org.w3c.dom.Text;
+
 public class GameActivity extends AppCompatActivity implements GameListener,
         PawnListener, ShortListener {
 
@@ -44,8 +47,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private PawnManager pManager2;
     private ImageView dice;
     private ImageView fakeDice;
-    private ImageView playerBnr;
-    private ImageView friendBnr;
     private MediaPlayer diceSound;
     private AnimationDrawable rollAnimation;
     private int player;
@@ -54,6 +55,8 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private boolean gameStarted = false;
     private boolean shortsInplace;
     private boolean pawnInPlace;
+    private TextView playerTxt;
+    private TextView phoneTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +81,10 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             eName = "Phone";
         }
         players = new Player[]{new Player(pName), new Player(eName)};
-        ((TextView) findViewById(R.id.player_name)).setText(pName);
-        ((TextView) findViewById(R.id.friend_name)).setText(eName);
+        playerTxt = (TextView) findViewById(R.id.player_name);
+        playerTxt.setText(pName);
+        phoneTxt = (TextView) findViewById(R.id.friend_name);
+        phoneTxt.setText(eName);
         Log.i(tag, "Players set.");
         if (mode != 2) {
             game = new Game(players);
@@ -89,11 +94,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             game = new GameFollower(players);
             player = 1;
         }
-        room = (RoomPlayModel) intent.getSerializableExtra(LoginActivity.ROOM);
-        if (room != null) {
-            room.setGame(game);
-            game.addListener(room);
-        }
+
         Log.i(tag, "Game generated.");
 
         pawn1 = (ImageView) findViewById(R.id.pawn1);
@@ -135,25 +136,29 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             dice.setClickable(false);
             gameStarted = true;
             int steps = (int)(1 + Math.random() * 6);
-            switch (steps) {
-                case 1: fakeDice.setImageResource(R.drawable.dice1);
-                    break;
-                case 2: fakeDice.setImageResource(R.drawable.dice2);
-                    break;
-                case 3: fakeDice.setImageResource(R.drawable.dice3);
-                    break;
-                case 4: fakeDice.setImageResource(R.drawable.dice4);
-                    break;
-                case 5: fakeDice.setImageResource(R.drawable.dice5);
-                    break;
-                default: fakeDice.setImageResource(R.drawable.dice6);
-            }
+            setFakeDice(steps);
             fakeDice.setVisibility(View.VISIBLE);
             Log.i(tag, "Player steps: " + steps);
             game.play(steps);
             return true;
         }
         return super.onTouchEvent(event);
+    }
+
+    private void setFakeDice(int steps) {
+        switch (steps) {
+            case 1: fakeDice.setImageResource(R.drawable.dice1);
+                break;
+            case 2: fakeDice.setImageResource(R.drawable.dice2);
+                break;
+            case 3: fakeDice.setImageResource(R.drawable.dice3);
+                break;
+            case 4: fakeDice.setImageResource(R.drawable.dice4);
+                break;
+            case 5: fakeDice.setImageResource(R.drawable.dice5);
+                break;
+            default: fakeDice.setImageResource(R.drawable.dice6);
+        }
     }
 
     private void setShortcuts() {
@@ -173,8 +178,8 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         super.onWindowFocusChanged(hasFocus);
         shortcuts.initShortcuts();
         shortcuts.addListener(GameActivity.this);
-        pManager1 = new PawnManager(pawn1, boardGrid, players[0], 0);
-        pManager2 = new PawnManager(pawn2, boardGrid, players[1], 20);
+        pManager1 = new PawnManager(pawn1, boardGrid, players[0], 0, dice);
+        pManager2 = new PawnManager(pawn2, boardGrid, players[1], 20, dice);
         pManager1.addListener(GameActivity.this);
         pManager2.addListener(GameActivity.this);
         game.addListener(GameActivity.this);
@@ -193,17 +198,54 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     }
 
     private void play() {
+        if (player == 0) {
+            playerTxt.setBackgroundColor(Color.RED);
+            phoneTxt.setBackgroundColor(Color.WHITE);
+        }
+        else {
+            playerTxt.setBackgroundColor(Color.WHITE);
+            phoneTxt.setBackgroundColor(Color.RED);
+        }
         if (!gameStarted)
             return;
         shortsInplace = true;
         pawnInPlace = false;
         Log.i(tag, "Play: " + player);
         if (player == 1) {
-            if (mode == 0)
-                game.play(players[1].makeMove());
+            if (mode == 0) {
+                fakeDice.setVisibility(View.INVISIBLE);
+                diceSound.start();
+                rollAnimation.stop();
+                rollAnimation.start();
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        int steps = players[1].makeMove();
+                        stopPhoneDice(steps);
+                    }
+                });
+                t.start();
+            }
         } else {
             dice.setClickable(true);
         }
+    }
+
+    private void stopPhoneDice(final int steps) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setFakeDice(steps);
+                rollAnimation.stop();
+                fakeDice.setVisibility(View.VISIBLE);
+                game.play(steps);
+            }
+        });
     }
 
     @Override
@@ -232,10 +274,12 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
     @Override
     public void turnChanged() {
-        if (player == 0)
+        if (player == 0) {
             ++player;
-        else
+        }
+        else {
             --player;
+        }
     }
 
     @Override
@@ -251,8 +295,10 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         Log.i(tag, "The winner:" + winner.getName());
         dice.setClickable(false);
         gameStarted = false;
-        Toast t = Toast.makeText(this, R.string.winner + winner.getName(), Toast.LENGTH_LONG);
-        t.show();
+        if (player == 0)
+            playerTxt.setText(R.string.is_winner);
+        else
+            phoneTxt.setText(R.string.is_winner);
     }
 
     @Override
