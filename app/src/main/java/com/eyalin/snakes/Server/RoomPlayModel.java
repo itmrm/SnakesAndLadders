@@ -48,7 +48,7 @@ public  class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdat
         View.OnClickListener,OnInvitationReceivedListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        RealTimeMessageReceivedListener, GameListener, Serializable {
+        RealTimeMessageReceivedListener, GameListener {
 
     final static String tag = "RoomPlayModel";
 
