@@ -40,9 +40,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
     final static String tag = "GameActivity";
 
-    private Communicator mService;
-    boolean mBound = false;
-
     private int mode;
 
     private AbsGame game;
@@ -77,10 +74,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         mode = 0;
         String pName;
         String eName;
-        if (!RoomPlayModel.mGoogleApiClient.isConnected())
-        {
-            RoomPlayModel.mGoogleApiClient.connect();
-        }
+
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra(LoginActivity.MULTI_KEY);
         if (bundle != null) {
@@ -124,11 +118,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         shortcuts = new ShortcutManager(boardGrid, shortcutImages, game.getBoard());
         shortsInplace = true;
         pawnInPlace = false;
-
-        if (mode != 0) {
-            Intent serviceIntent = new Intent(this, Communicator.class);
-            bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
-        }
     }
 
     private void initDice() {
@@ -371,32 +360,12 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             play();
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-            roomPlayModel = mService.getRoomPlayModel();
-            roomPlayModel.setGame(game);
-           // game.addListener(roomPlayModel);
-            if (mode == 1)
-                roomPlayModel.setShortcuts(game.getBoard().getShortcuts());
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mBound = false;
-        }
-    };
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
     }
 
+    //#################################################################################
+    //                MultiplayRoom
+    //#################################################################################
 }

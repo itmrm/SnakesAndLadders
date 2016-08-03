@@ -170,25 +170,21 @@ public class LoginActivity extends AppCompatActivity implements
                 e.printStackTrace();
             }
         }
-        else if(view.getId() == R.id.invite_button)
-        {
+        else if(view.getId() == R.id.invite_button) {
             Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(RoomPlayModel.mGoogleApiClient, 1, 3);
             startActivityForResult(intent, RC_SELECT_PLAYERS);
         }
 
-        else if(view.getId() == R.id.onInvitationReceived)
-        {
+        else if(view.getId() == R.id.onInvitationReceived) {
             seeInventations();
         }
-        else if(view.getId() == R.id.btnSendToast)
-        {
+        else if(view.getId() == R.id.btnSendToast) {
             sendToast();
         }
 
     }
 
-    private void sendToast()
-    {
+    private void sendToast() {
         byte[] message =  "Sahbak".getBytes();
 
 
@@ -295,8 +291,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
-    private void seeInventations()
-    {
+    private void seeInventations() {
         // launch the intent to show the invitation inbox screen
         Intent intent = Games.Invitations.getInvitationInboxIntent(RoomPlayModel.mGoogleApiClient);
         this.startActivityForResult(intent, RC_INVITATION_INBOX);
@@ -357,8 +352,7 @@ public class LoginActivity extends AppCompatActivity implements
             // prevent screen from sleeping during handshake
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-        else if (request == 10001)
-        {
+        else if (request == 10001) {
             RoomConfig.Builder roomConfigBuilder = roomPlayModel.makeBasicRoomConfigBuilder();
             roomConfigBuilder.setInvitationIdToAccept(roomPlayModel.mIncomingInvitationId);
             Games.RealTimeMultiplayer.join(RoomPlayModel.mGoogleApiClient, roomConfigBuilder.build());
