@@ -63,7 +63,6 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
     public boolean mPlaying = false;
     public String mRoomId = "2";
     private  Context mContext;
-    private Context loginActivity;
 
     int GamePlayerStatus = 0; // 0 - single player, 1 - leader, 2 - follower.
     private AbsGame mGame;
@@ -74,9 +73,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         initialVariables();
     }
 
-    public void setLoginActivityContext(Context loginActivity) {
-        this.loginActivity = loginActivity;
-    }
+
 
     public static RoomPlayModel getInstance(Context context) {
         if (roomPlayModel == null) {
@@ -272,7 +269,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
         // get waiting room intent
         Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
-        ((GameActivity)loginActivity).startActivityForResult(i, RC_WAITING_ROOM);
+        ((GameActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
     }
 
     @Override
@@ -290,7 +287,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
             Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient,
                     room, Integer.MAX_VALUE);
-            ((GameActivity)loginActivity).startActivityForResult(i, RC_WAITING_ROOM);
+            ((GameActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
         }
 
     }
@@ -389,7 +386,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
             // start game!
             roomPlay = room;
             Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
-            ((GameActivity)loginActivity).startActivityForResult(i, RC_WAITING_ROOM);
+            ((GameActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
             //((LoginActivity)loginActivity).startGame();
         }
     }

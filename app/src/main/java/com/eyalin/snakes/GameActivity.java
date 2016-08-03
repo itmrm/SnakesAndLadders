@@ -276,6 +276,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         //Multi
         if (mode != 0) {
             RoomPlayModel.mGoogleApiClient.connect();
+
         }
     }
 
@@ -519,6 +520,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
     @Override
     public void onConnected(Bundle connectionHint) {
+        roomPlayModel = RoomPlayModel.getInstance(this);
         setOnlineButtonVisibility(true);
         // Show sign-out button on main menu
 //        roomPlayModel = RoomPlayModel.getInstance(this);
