@@ -106,9 +106,16 @@ public class LoginActivity extends AppCompatActivity implements
         // launch the player selection screen
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+// Create the Google Api Client with access to Plus and Games
+        RoomPlayModel.mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
 
         setContentView(R.layout.activity_main);
-
+        RoomPlayModel.mGoogleApiClient.connect();
         initialActivity();
 
     }
@@ -146,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements
             // start the sign-in flow
             Log.d(tag, "Sign-in button8 clicked");
             mSignInClicked = true;
-            RoomPlayModel.mGoogleApiClient.connect();
+
 
         }
         else if (view.getId() == R.id.sign_out_button) {
@@ -195,6 +202,7 @@ public class LoginActivity extends AppCompatActivity implements
         super.onStart();
         Intent intent = new Intent(this, Communicator.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        RoomPlayModel.mGoogleApiClient.connect();
     }
 
     @Override
@@ -223,12 +231,15 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     public void setRoomPlayModel(RoomPlayModel room) {
-        roomPlayModel = room;
-        roomPlayModel.setLoginActivityContext(this);
+        //roomPlayModel = room;
+
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
+        mService.setRoomPlayModel();
+        roomPlayModel = mService.getRoomPlayModel();
+        roomPlayModel.setLoginActivityContext(this);
         setOnlineButtonVisibility(true);
         // Show sign-out button on main menu
 //        roomPlayModel = RoomPlayModel.getInstance(this);
@@ -595,12 +606,12 @@ public class LoginActivity extends AppCompatActivity implements
             LocalBinder binder = (LocalBinder) service;
             mService = binder.getService();
             mBound = true;
-            mService.setRoomPlayModel(LoginActivity.this, LoginActivity.this);
+            //mService.setRoomPlayModel(LoginActivity.this, LoginActivity.this);
             mService.addListener(LoginActivity.this);
-            if (!mInSignInFlow && !mExplicitSignOut) {
-                // auto sign in
-                RoomPlayModel.mGoogleApiClient.connect();
-            }
+//            if (!mInSignInFlow && !mExplicitSignOut) {
+//                // auto sign in
+//                RoomPlayModel.mGoogleApiClient.connect();
+//            }
         }
 
         @Override

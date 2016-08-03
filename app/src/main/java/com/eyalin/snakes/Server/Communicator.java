@@ -64,15 +64,10 @@ public class Communicator extends Service implements
         return mBinder;
     }
 
-    public void setRoomPlayModel(GoogleApiClient.ConnectionCallbacks cBacks,
-                                 GoogleApiClient.OnConnectionFailedListener fListener) {
-        // Create the Google Api Client with access to Plus and Games
-        RoomPlayModel.mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
-                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
-                .addConnectionCallbacks(cBacks).addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(fListener).addOnConnectionFailedListener(this)
-                .build();
+
+
+    public void setRoomPlayModel() {
+        roomPlayModel = new RoomPlayModel(this);
     }
 
     public RoomPlayModel getRoomPlayModel() {

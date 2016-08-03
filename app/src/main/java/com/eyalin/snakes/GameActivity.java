@@ -77,7 +77,10 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         mode = 0;
         String pName;
         String eName;
-
+        if (!RoomPlayModel.mGoogleApiClient.isConnected())
+        {
+            RoomPlayModel.mGoogleApiClient.connect();
+        }
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra(LoginActivity.MULTI_KEY);
         if (bundle != null) {
@@ -135,6 +138,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         fakeDice = (ImageView) findViewById(R.id.fake_dice);
         fakeDice.setVisibility(View.INVISIBLE);
         diceSound = MediaPlayer.create(this, R.raw.roll_dice);
+
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -375,7 +379,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             mBound = true;
             roomPlayModel = mService.getRoomPlayModel();
             roomPlayModel.setGame(game);
-            game.addListener(roomPlayModel);
+           // game.addListener(roomPlayModel);
             if (mode == 1)
                 roomPlayModel.setShortcuts(game.getBoard().getShortcuts());
         }
