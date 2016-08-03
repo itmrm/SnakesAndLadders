@@ -30,13 +30,8 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".LoginActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".GameActivity"
             android:screenOrientation="portrait" />
-
-        <service android:name=".Server.Communicator" />
 
     </application>
 

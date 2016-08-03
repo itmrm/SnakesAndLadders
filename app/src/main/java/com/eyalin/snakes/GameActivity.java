@@ -138,13 +138,10 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         Bundle bundle = intent.getBundleExtra(WelcomeActivity.BUNDLE_KEY);
         if (bundle != null) {
             mode = bundle.getInt(MODE_KEY);
-            pName = bundle.getString(PLAYER_NAME);
-            eName = bundle.getString(FRIEND_NAME);
         }
-        else {
-            pName = "Player";
-            eName = "Phone";
-        }
+        pName = "Player";
+        eName = "Phone";
+
         players = new Player[]{new Player(pName), new Player(eName)};
         playerTxt = (TextView) findViewById(R.id.player_name);
         playerTxt.setText(pName);
