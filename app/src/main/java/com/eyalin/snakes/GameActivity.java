@@ -93,9 +93,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     //Multi
     //static final String tag = "LoginActivity";
     static final String MULTI_KEY = "Multiplayer";
-    static final String PLAYER_NAME = "player";
-    static final String FRIEND_NAME = "friend";
-    static final String MODE_KEY = "GameMode";
     static final String ROOM = "room";
 
     boolean mBound = false;
@@ -137,7 +134,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra(WelcomeActivity.BUNDLE_KEY);
         if (bundle != null) {
-            mode = bundle.getInt(MODE_KEY);
+            mode = bundle.getInt(WelcomeActivity.MODE_KEY);
         }
         pName = "Player";
         eName = "Phone";
@@ -176,8 +173,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         pawnInPlace = false;
 
         //Multi
-        if(mode!=0)
-        {
+        if(mode != 0) {
             RoomPlayModel.mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
                     .addApi(Games.API).addScope(Games.SCOPE_GAMES)
@@ -280,8 +276,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
                 Toast.LENGTH_LONG);
         t.show();
         //Multi
-        if(mode!=0)
-        {
+        if (mode != 0) {
             RoomPlayModel.mGoogleApiClient.connect();
         }
     }
@@ -735,8 +730,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         if (mPlaying) {
             // add new player to an ongoing game
         } else if (shouldStartGame(room)) {
-            startGame();
-            // start game!
+
         }
     }
 
@@ -869,25 +863,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         }
 
     }
-
-    public void startGame() {
-        Bundle bundle = new Bundle();
-        bundle.putString(PLAYER_NAME, roomPlayModel.currentPlayer.getName());
-        String name = "";
-        for (Participant p : RoomPlayModel.roomPlay.getParticipants()) {
-            if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId()))
-                name = p.getPlayer().getName();
-        }
-        bundle.putString(FRIEND_NAME, name);
-        if (roomPlayModel.isCreator)
-            bundle.putInt(MODE_KEY, 1);
-        else
-            bundle.putInt(MODE_KEY, 2);
-
-
-        //startActivity(gameIntent);
-    }
-
 
     @Override
     protected void onDestroy() {

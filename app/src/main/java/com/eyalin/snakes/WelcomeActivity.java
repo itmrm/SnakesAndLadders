@@ -36,7 +36,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public void onMultiPlayerClicked(View view) {
         Intent intent = new Intent(this, GameActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt(MODE_KEY, 0);
+        bundle.putInt(MODE_KEY, 1);
         intent.putExtra(BUNDLE_KEY, bundle);
         startActivity(intent);
     }
