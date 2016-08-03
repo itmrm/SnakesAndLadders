@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,8 +12,8 @@ import android.widget.Toast;
 
 import com.eyalin.snakes.BL.AbsGame;
 import com.eyalin.snakes.BL.Shortcut;
+import com.eyalin.snakes.GameActivity;
 import com.eyalin.snakes.Listeners.GameListener;
-import com.eyalin.snakes.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
@@ -40,7 +38,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -275,7 +272,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
         // get waiting room intent
         Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
-        ((LoginActivity)loginActivity).startActivityForResult(i, RC_WAITING_ROOM);
+        ((GameActivity)loginActivity).startActivityForResult(i, RC_WAITING_ROOM);
     }
 
     @Override
@@ -293,7 +290,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
             Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient,
                     room, Integer.MAX_VALUE);
-            ((LoginActivity)loginActivity).startActivityForResult(i, RC_WAITING_ROOM);
+            ((GameActivity)loginActivity).startActivityForResult(i, RC_WAITING_ROOM);
         }
 
     }
@@ -391,7 +388,9 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         } else if (shouldStartGame(room)) {
             // start game!
             roomPlay = room;
-            ((LoginActivity)loginActivity).startGame();
+            Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
+            ((GameActivity)loginActivity).startActivityForResult(i, RC_WAITING_ROOM);
+            //((LoginActivity)loginActivity).startGame();
         }
     }
 
