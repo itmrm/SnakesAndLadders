@@ -78,11 +78,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         String pName;
         String eName;
 
-        if (mode != 0) {
-            Intent serviceIntent = new Intent(this, Communicator.class);
-            bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
-        }
-
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra(LoginActivity.MULTI_KEY);
         if (bundle != null) {
@@ -126,6 +121,11 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         shortcuts = new ShortcutManager(boardGrid, shortcutImages, game.getBoard());
         shortsInplace = true;
         pawnInPlace = false;
+
+        if (mode != 0) {
+            Intent serviceIntent = new Intent(this, Communicator.class);
+            bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 
     private void initDice() {

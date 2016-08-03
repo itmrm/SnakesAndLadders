@@ -64,8 +64,8 @@ public class Communicator extends Service implements
         RoomPlayModel.mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
-                .addConnectionCallbacks(cBacks)
-                .addOnConnectionFailedListener(fListener)
+                .addConnectionCallbacks(cBacks).addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(fListener).addOnConnectionFailedListener(this)
                 .build();
     }
 
