@@ -387,6 +387,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
             roomPlay = room;
             Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
             ((GameActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
+            ((GameActivity)mContext).startGame();
             //((LoginActivity)loginActivity).startGame();
         }
     }

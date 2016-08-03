@@ -176,7 +176,7 @@
         android:paddingRight="16dp"
         android:orientation="vertical"
         android:background="@drawable/main_background"
-
+        android:id="@+id/layout_Login"
         tools:context=".LoginActivity">
         <TextView
             android:id="@+id/lbHeader"

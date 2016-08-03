@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.Layout;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -18,6 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +52,7 @@ import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -100,6 +104,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private Button btn_SignOut;
     private Button btn_Invite;
     private Button btn_SeeInventations;
+    private LinearLayout  layout_Login;
     private boolean mSignInClicked = false;
 
     private RoomPlayModel roomPlayModel;
@@ -429,6 +434,10 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     }
 
 
+    public void startGame()
+    {
+        layout_Login.setVisibility(View.INVISIBLE);
+    }
 
     //#################################################################################
     //                MultiplayRoom
@@ -441,6 +450,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         btn_SignOut = (Button)findViewById(R.id.sign_out_button);
         btn_Invite = (Button)findViewById(R.id.invite_button);
         btn_SeeInventations = (Button)findViewById(R.id.onInvitationReceived);
+        layout_Login = (LinearLayout)findViewById(R.id.layout_Login);
 
         btn_SignIn.setOnClickListener(this);
         btn_SignOut.setOnClickListener(this);
