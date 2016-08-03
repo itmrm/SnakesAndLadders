@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements
     private Button btn_SignOut;
     private Button btn_Invite;
     private Button btn_SeeInventations;
+    private Button     btn_SendButton;
 
     boolean mExplicitSignOut = false;
     int REQUEST_CODE_RESOLVE_ERR = 1000;
@@ -124,12 +125,12 @@ public class LoginActivity extends AppCompatActivity implements
         btn_SignIn = (SignInButton) findViewById(R.id.sign_in_button);
         setGooglePlusButtonText(btn_SignIn,"Sign in to play online");
 
-
+        btn_SendButton = (Button)findViewById(R.id.btnSendToast);
         btn_SignOut = (Button)findViewById(R.id.sign_out_button);
         btn_Invite = (Button)findViewById(R.id.invite_button);
         btn_SeeInventations = (Button)findViewById(R.id.onInvitationReceived);
 
-
+        btn_SendButton.setOnClickListener(this);
         btn_SignIn.setOnClickListener(this);
         btn_SignOut.setOnClickListener(this);
         btn_Invite.setOnClickListener(this);
@@ -179,8 +180,24 @@ public class LoginActivity extends AppCompatActivity implements
         {
             seeInventations();
         }
+        else if(view.getId() == R.id.btnSendToast)
+        {
+            sendToast();
+        }
+
+    }
+
+    private void sendToast()
+    {
+        byte[] message =  "Sahbak".getBytes();
 
 
+        for (Participant p : RoomPlayModel.roomPlay.getParticipants()) {
+            if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId())) {
+                Games.RealTimeMultiplayer.sendReliableMessage(RoomPlayModel.mGoogleApiClient, this, message,
+                        RoomPlayModel.roomPlay.getRoomId(), p.getParticipantId());
+            }
+        }
     }
 
     //need to invoke in the end of player's turn
@@ -597,7 +614,7 @@ public class LoginActivity extends AppCompatActivity implements
 
         gameIntent.putExtra(MULTI_KEY, bundle);
 
-        startActivity(gameIntent);
+        //startActivity(gameIntent);
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {

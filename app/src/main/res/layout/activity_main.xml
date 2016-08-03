@@ -60,6 +60,14 @@
         android:text="See Inventations"
         style="@style/mainButton"
         />
+    <Button
+        android:id="@+id/btnSendToast"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Toast"
+        style="@style/mainButton"
+        />
+
 
 
 </LinearLayout >
