@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.eyalin.snakes.Listeners.ServerListener;
 import com.eyalin.snakes.Server.Communicator;
 import com.eyalin.snakes.Server.Communicator.LocalBinder;
 import com.eyalin.snakes.Server.RoomPlayModel;
@@ -52,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         RoomUpdateListener,RoomStatusUpdateListener,
-        RealTimeMessageReceivedListener {
+        RealTimeMessageReceivedListener, ServerListener {
 
     static final String tag = "LoginActivity";
     static final String MULTI_KEY = "Multiplayer";
@@ -176,8 +177,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     //need to invoke in the end of player's turn
-    private void endTurn()
-    {
+    private void endTurn() {
         //insert any object instead of string, and make sure you parse it in message recieved
         byte[] message = editText.getText().toString().getBytes();
 
@@ -222,10 +222,16 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void setRoomPlayModel(RoomPlayModel room) {
+        roomPlayModel = room;
+        roomPlayModel.setLoginActivityContext(this);
+    }
+
+    @Override
     public void onConnected(Bundle connectionHint) {
         setOnlineButtonVisibility(true);
         // Show sign-out button on main menu
-        roomPlayModel = RoomPlayModel.getInstance(this);
+//        roomPlayModel = RoomPlayModel.getInstance(this);
         // show sign-out button, hide the sign-in button
         findViewById(R.id.sign_in_button).setVisibility(View.GONE);
         findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
@@ -590,7 +596,7 @@ public class LoginActivity extends AppCompatActivity implements
             mService = binder.getService();
             mBound = true;
             mService.setRoomPlayModel(LoginActivity.this, LoginActivity.this);
-            roomPlayModel = mService.getRoomPlayModel();
+            mService.addListener(LoginActivity.this);
             if (!mInSignInFlow && !mExplicitSignOut) {
                 // auto sign in
                 RoomPlayModel.mGoogleApiClient.connect();

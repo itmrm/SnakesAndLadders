@@ -12,12 +12,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.eyalin.snakes.GameActivity;
 import com.eyalin.snakes.Listeners.ServerListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
+import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMultiplayer;
@@ -37,7 +39,11 @@ public class Communicator extends Service implements
         RoomUpdateListener,RoomStatusUpdateListener,
         RealTimeMessageReceivedListener {
 
-    final static String tag = "Communicator";
+    static final String tag = "Communicator";
+    static final String MULTI_KEY = "Multiplayer";
+    static final String PLAYER_NAME = "player";
+    static final String FRIEND_NAME = "friend";
+    static final String MODE_KEY = "GameMode";
 
     private final IBinder mBinder = new LocalBinder();
     private ArrayList<ServerListener> mListeners;
@@ -70,8 +76,6 @@ public class Communicator extends Service implements
     }
 
     public RoomPlayModel getRoomPlayModel() {
-        if (roomPlayModel == null)
-            Log.e(tag, "Room is null.");
         return roomPlayModel;
     }
 
@@ -104,7 +108,9 @@ public class Communicator extends Service implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+        roomPlayModel = RoomPlayModel.getInstance(this);
+        for (ServerListener l : mListeners)
+            l.setRoomPlayModel(roomPlayModel);
     }
 
     @Override

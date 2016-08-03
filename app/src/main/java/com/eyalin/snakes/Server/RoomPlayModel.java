@@ -66,6 +66,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
     public boolean mPlaying = false;
     public String mRoomId = "2";
     private  Context mContext;
+    private Context loginActivity;
 
     int GamePlayerStatus = 0; // 0 - single player, 1 - leader, 2 - follower.
     private AbsGame mGame;
@@ -74,6 +75,10 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         this.mContext = context;
         Games.Invitations.registerInvitationListener(mGoogleApiClient, this);
         initialVariables();
+    }
+
+    public void setLoginActivityContext(Context loginActivity) {
+        this.loginActivity = loginActivity;
     }
 
     public static RoomPlayModel getInstance(Context context) {
@@ -234,7 +239,9 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
-
+        Toast t = Toast.makeText(mContext, "Setting shotrcuts.", Toast.LENGTH_LONG);
+        t.show();
+            Log.e(tag, "Message Received.");
         try {
             GameStatus gameStatus = (GameStatus)convertFromBytes(realTimeMessage.getMessageData());
             if (gameStatus.steps != 0)
@@ -268,7 +275,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
         // get waiting room intent
         Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
-        ((LoginActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
+        ((LoginActivity)loginActivity).startActivityForResult(i, RC_WAITING_ROOM);
     }
 
     @Override
@@ -279,15 +286,14 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         }
             roomPlay = room;
         // get waiting room intent
-        if(mGoogleApiClient.isConnected() != true)
-        {
+        if(mGoogleApiClient.isConnected() != true) {
 
         }
         else {
 
             Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mGoogleApiClient,
                     room, Integer.MAX_VALUE);
-            ((LoginActivity)mContext).startActivityForResult(i, RC_WAITING_ROOM);
+            ((LoginActivity)loginActivity).startActivityForResult(i, RC_WAITING_ROOM);
         }
 
     }
@@ -385,7 +391,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         } else if (shouldStartGame(room)) {
             // start game!
             roomPlay = room;
-            ((LoginActivity)mContext).startGame();
+            ((LoginActivity)loginActivity).startGame();
         }
     }
 
@@ -455,6 +461,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
     public void setGame(AbsGame game) {
         mGame = game;
         mGame.addListener(this);
+        Log.e(tag, "Game Setted.");
     }
 
     public void setShortcuts(Shortcut[] shortcuts) {

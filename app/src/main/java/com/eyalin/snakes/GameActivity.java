@@ -376,6 +376,8 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             roomPlayModel = mService.getRoomPlayModel();
             roomPlayModel.setGame(game);
             game.addListener(roomPlayModel);
+            if (mode == 1)
+                roomPlayModel.setShortcuts(game.getBoard().getShortcuts());
         }
 
         @Override
