@@ -51,7 +51,8 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         GoogleApiClient.OnConnectionFailedListener,
         RealTimeMessageReceivedListener, GameListener {
 
-    final static String tag = "RoomPlayModel";
+    static final String tag = "RoomPlayModel";
+
     private static RoomPlayModel roomPlayModel;
     public static Room roomPlay;
     public static Player currentPlayer;
@@ -75,10 +76,8 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         initialVariables();
     }
 
-    public static RoomPlayModel getInstance(Context context)
-    {
-        if (roomPlayModel == null)
-        {
+    public static RoomPlayModel getInstance(Context context) {
+        if (roomPlayModel == null) {
             roomPlayModel = new RoomPlayModel(context);
         }
         return roomPlayModel;

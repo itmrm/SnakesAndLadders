@@ -1,9 +1,13 @@
 package com.eyalin.snakes;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +25,7 @@ import com.eyalin.snakes.BL.Player;
 import com.eyalin.snakes.Listeners.GameListener;
 import com.eyalin.snakes.Listeners.PawnListener;
 import com.eyalin.snakes.Listeners.ShortListener;
+import com.eyalin.snakes.Server.Communicator;
 import com.eyalin.snakes.Server.RoomPlayModel;
 import com.eyalin.snakes.UI.BoardAdapter;
 import com.eyalin.snakes.UI.PawnManager;
@@ -34,6 +39,9 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         PawnListener, ShortListener {
 
     final static String tag = "GameActivity";
+
+    private Communicator mService;
+    boolean mBound = false;
 
     private int mode;
 
@@ -65,11 +73,15 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         Log.i(tag, "Layout set.");
-        roomPlayModel = RoomPlayModel.getInstance(this);
 
         mode = 0;
         String pName;
         String eName;
+
+        if (mode != 0) {
+            Intent serviceIntent = new Intent(this, Communicator.class);
+            bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
+        }
 
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra(LoginActivity.MULTI_KEY);
@@ -353,6 +365,32 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         Log.i(tag, "New shortcut is in place.");
         if(gameStarted)
             play();
+    }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Communicator.LocalBinder binder = (Communicator.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+            roomPlayModel = mService.getRoomPlayModel();
+            roomPlayModel.setGame(game);
+            game.addListener(roomPlayModel);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBound = false;
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
     }
 
 }

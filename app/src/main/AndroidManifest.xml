@@ -33,7 +33,7 @@
         <activity
             android:name=".GameActivity"
             android:screenOrientation="portrait" />
-
+        <service android:name=".Server.Communicator" />
     </application>
 
 </manifest>

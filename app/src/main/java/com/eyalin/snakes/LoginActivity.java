@@ -1,7 +1,11 @@
 package com.eyalin.snakes;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.eyalin.snakes.Server.Communicator;
+import com.eyalin.snakes.Server.Communicator.LocalBinder;
 import com.eyalin.snakes.Server.RoomPlayModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
@@ -36,7 +42,6 @@ import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListene
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.android.gms.plus.Plus;
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +60,9 @@ public class LoginActivity extends AppCompatActivity implements
     static final String FRIEND_NAME = "friend";
     static final String MODE_KEY = "GameMode";
     static final String ROOM = "room";
+
+    private Communicator mService;
+    boolean mBound = false;
 
     //Buttons
     private SignInButton btn_SignIn;
@@ -96,13 +104,6 @@ public class LoginActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         // launch the player selection screen
 
-        // Create the Google Api Client with access to Plus and Games
-        RoomPlayModel.mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Plus.API).addScope(Plus.SCOPE_PLUS_LOGIN)
-                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_main);
@@ -111,8 +112,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
-    private void initialActivity()
-    {
+    private void initialActivity() {
         btn_SignIn = (SignInButton) findViewById(R.id.sign_in_button);
         setGooglePlusButtonText(btn_SignIn,"Sign in to play online");
 
@@ -193,11 +193,8 @@ public class LoginActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (!mInSignInFlow && !mExplicitSignOut) {
-            // auto sign in
-            RoomPlayModel.mGoogleApiClient.connect();
-        }
-
+        Intent intent = new Intent(this, Communicator.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -566,7 +563,6 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
-
     public void startGame() {
         Intent gameIntent = new Intent(LoginActivity.this, GameActivity.class);
         Bundle bundle = new Bundle();
@@ -587,9 +583,33 @@ public class LoginActivity extends AppCompatActivity implements
         startActivity(gameIntent);
     }
 
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocalBinder binder = (LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+            mService.setRoomPlayModel(LoginActivity.this, LoginActivity.this);
+            roomPlayModel = mService.getRoomPlayModel();
+            if (!mInSignInFlow && !mExplicitSignOut) {
+                // auto sign in
+                RoomPlayModel.mGoogleApiClient.connect();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBound = false;
+        }
+    };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
     }
 
 }
