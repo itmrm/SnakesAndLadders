@@ -236,22 +236,22 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         Toast t = Toast.makeText(mContext, "Message Recievd", Toast.LENGTH_LONG);
         t.show();
             Log.e(tag, "Message Received.");
-//        try {
-//            GameStatus gameStatus = (GameStatus)convertFromBytes(realTimeMessage.getMessageData());
-//            if (gameStatus.steps != 0)
-//                mGame.play(gameStatus.steps);
-//            else if (gameStatus.index != -1)
-//                mGame.setShortcut(gameStatus.shortcut, gameStatus.index);
-//            else {
-//                int length = gameStatus.shortcuts.length;
-//                for (int i = 0; i < length; i++)
-//                    mGame.setShortcut(gameStatus.shortcuts[i], i);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            GameStatus gameStatus = (GameStatus)convertFromBytes(realTimeMessage.getMessageData());
+            if (gameStatus.steps != 0)
+                mGame.play(gameStatus.steps);
+            else if (gameStatus.index != -1)
+                mGame.setShortcut(gameStatus.shortcut, gameStatus.index);
+            else {
+                int length = gameStatus.shortcuts.length;
+                for (int i = 0; i < length; i++)
+                    mGame.setShortcut(gameStatus.shortcuts[i], i);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
     }
