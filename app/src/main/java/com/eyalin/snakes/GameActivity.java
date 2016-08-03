@@ -181,7 +181,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
                     .addOnConnectionFailedListener(this)
                     .build();
         }
-
+        initialActivity();
 
     }
 
