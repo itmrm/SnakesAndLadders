@@ -27,7 +27,6 @@ import com.eyalin.snakes.BL.GameFollower;
 import com.eyalin.snakes.BL.Player;
 import com.eyalin.snakes.Listeners.GameListener;
 import com.eyalin.snakes.Listeners.PawnListener;
-import com.eyalin.snakes.Listeners.ServerListener;
 import com.eyalin.snakes.Listeners.ShortListener;
 import com.eyalin.snakes.Server.RoomPlayModel;
 import com.eyalin.snakes.UI.BoardAdapter;
@@ -61,7 +60,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         RoomUpdateListener,RoomStatusUpdateListener,
-        RealTimeMessageReceivedListener, ServerListener {
+        RealTimeMessageReceivedListener {
 
     final static String tag = "GameActivity";
 
@@ -91,7 +90,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
 
     //Multi
-    //static final String tag = "LoginActivity";
     static final String MULTI_KEY = "Multiplayer";
     static final String ROOM = "room";
 
@@ -517,12 +515,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             RoomPlayModel.mGoogleApiClient.disconnect();
             ((TextView) findViewById(R.id.lbHeader)).setText("not connected");
         }
-    }
-
-    @Override
-    public void setRoomPlayModel(RoomPlayModel room) {
-        //roomPlayModel = room;
-
     }
 
     @Override
