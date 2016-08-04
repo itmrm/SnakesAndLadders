@@ -28,6 +28,7 @@ import com.eyalin.snakes.BL.AbsGame;
 import com.eyalin.snakes.BL.Game;
 import com.eyalin.snakes.BL.GameFollower;
 import com.eyalin.snakes.BL.Player;
+import com.eyalin.snakes.BL.Shortcut;
 import com.eyalin.snakes.Listeners.GameListener;
 import com.eyalin.snakes.Listeners.PawnListener;
 import com.eyalin.snakes.Listeners.ShortListener;
@@ -67,6 +68,8 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         RealTimeMessageReceivedListener {
 
     final static String tag = "GameActivity";
+    static final String MULTI_KEY = "Multiplayer";
+    static final String ROOM = "room";
 
     private int mode;
 
@@ -90,14 +93,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private boolean pawnInPlace;
     private TextView playerTxt;
     private TextView phoneTxt;
-    //private RoomPlayModel roomPlayModel;
-
-
-    //Multi
-    static final String MULTI_KEY = "Multiplayer";
-    static final String ROOM = "room";
-
-    boolean mBound = false;
 
     //Buttons
     private SignInButton btn_SignIn;
@@ -118,8 +113,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private  String mIncomingInvitationId;
     private   Button button;
     private EditText editText;
-    //private   Room roomPlay;
-    // are we already playing?
     boolean mPlaying = false;
     // at least 2 players required for our game
     final static int MIN_PLAYERS = 2;
@@ -183,6 +176,10 @@ public class GameActivity extends AppCompatActivity implements GameListener,
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
+            dice.setClickable(false);
+        }
+        else {
+            layout_Login.setVisibility(View.INVISIBLE);
         }
         initialActivity();
 
@@ -266,7 +263,9 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         pManager1.addListener(GameActivity.this);
         pManager2.addListener(GameActivity.this);
         game.addListener(GameActivity.this);
-        if (player == 0)
+        if (player == 0 && mode ==0)
+            dice.setClickable(true);
+        else if (mode != 0 && RoomPlayModel.isCreator)
             dice.setClickable(true);
         else
             dice.setClickable(false);
@@ -275,13 +274,15 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     @Override
     protected void onStart() {
         super.onStart();
-        Toast t = Toast.makeText(this, R.string.directions,
-                Toast.LENGTH_LONG);
-        t.show();
         //Multi
         if (mode != 0) {
             RoomPlayModel.mGoogleApiClient.connect();
 
+        }
+        else {
+            Toast t = Toast.makeText(this, R.string.directions,
+                    Toast.LENGTH_LONG);
+            t.show();
         }
     }
 
@@ -434,9 +435,24 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     }
 
 
-    public void startGame()
-    {
+    public void startGame() {
         layout_Login.setVisibility(View.INVISIBLE);
+        if (!RoomPlayModel.isCreator) {
+            game = new GameFollower(players);
+            game.addListener(this);
+            boardAdapter = new BoardAdapter(this, game.getBoard());
+            boardGrid.setAdapter(boardAdapter);
+            boardGrid.requestLayout();
+        }
+        game.addListener(roomPlayModel);
+        roomPlayModel.setGame(game);
+        if (RoomPlayModel.isCreator) {
+            roomPlayModel.setShortcuts(game.getBoard().getShortcuts());
+            dice.setClickable(true);
+        }
+        Toast t = Toast.makeText(this, R.string.directions,
+                Toast.LENGTH_LONG);
+        t.show();
     }
 
     //#################################################################################
@@ -684,10 +700,11 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             // display error
             return;
         }
-        //    roomPlay = room;
+
         // get waiting room intent
         Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(RoomPlayModel.mGoogleApiClient, room, Integer.MAX_VALUE);
         startActivityForResult(i, RC_WAITING_ROOM);
+
     }
 
     @Override
@@ -871,10 +888,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mBound) {
-            //unbindService(mConnection);
-            mBound = false;
-        }
     }
 
 

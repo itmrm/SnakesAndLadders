@@ -63,6 +63,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
     public boolean mPlaying = false;
     public String mRoomId = "2";
     private  Context mContext;
+    private int player = 1;
 
     int GamePlayerStatus = 0; // 0 - single player, 1 - leader, 2 - follower.
     private AbsGame mGame;
@@ -243,6 +244,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
             else if (gameStatus.index != -1)
                 mGame.setShortcut(gameStatus.shortcut, gameStatus.index);
             else {
+                Log.i(tag, "Set Shortcuts Message.");
                 int length = gameStatus.shortcuts.length;
                 for (int i = 0; i < length; i++)
                     mGame.setShortcut(gameStatus.shortcuts[i], i);
@@ -417,20 +419,25 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
     @Override
     public void makeSteps(int steps) {
-        Log.d(tag, "Send steps");
-        GameStatus gameStatus = new GameStatus();
-        gameStatus.steps = steps;
-        try {
-            makeMove(gameStatus);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Log.e(tag, "Send steps");
+        if ((isCreator == true && player == 0) || (isCreator == false && player == 1)) {
+            GameStatus gameStatus = new GameStatus();
+            gameStatus.steps = steps;
+            try {
+                makeMove(gameStatus);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
 
     @Override
     public void turnChanged() {
-
+        if (player == 0)
+            player = 1;
+        else
+            player = 0;
     }
 
     @Override

@@ -18,6 +18,7 @@ public class GameFollower implements AbsGame {
     public GameFollower(Player[] players) {
         mPlayers = players;
         board = new Board();
+        turn = 1;
         listeners = new ArrayList<>();
     }
 
@@ -82,7 +83,8 @@ public class GameFollower implements AbsGame {
 
     @Override
     public void setShortcut(Shortcut shortcut, int index) {
-        board.getShortcuts()[index] = shortcut;
+        Shortcut[] shortcuts = board.getShortcuts();
+        shortcuts[index] = shortcut;
         fireShortcutChanged(index);
     }
 
