@@ -121,6 +121,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         Log.i(tag, "onCreate.");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Log.i(tag, "Layout set.");
 
         mode = 0;
@@ -167,7 +168,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         shortcuts = new ShortcutManager(boardGrid, shortcutImages, game.getBoard());
         shortsInplace = true;
         pawnInPlace = false;
-
+        layout_Login = (LinearLayout) findViewById(R.id.layout_Login);
         //Multi
         if(mode != 0) {
             RoomPlayModel.mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -289,7 +290,6 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private void play() {
         if (player == 0) {
             playerTxt.setBackgroundColor(Color.RED);
-
             phoneTxt.setBackgroundColor(Color.WHITE);
         }
         else {
@@ -320,6 +320,9 @@ public class GameActivity extends AppCompatActivity implements GameListener,
                     }
                 });
                 t.start();
+                if (!RoomPlayModel.isCreator) {
+                    dice.setClickable(true);
+                }
             }
         } else {
             dice.setClickable(true);
@@ -349,6 +352,10 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     @Override
     public void makeSteps(int steps) {
         Log.i(tag, "Player: " + player + "; Steps: " + steps);
+        if (mode != 0 && game instanceof Game && player == 0)
+            roomPlayModel.makeSteps(steps);
+        if (game instanceof GameFollower && player == 1)
+            roomPlayModel.makeSteps(steps);
         if (player == 0)
             if (steps > 0)
                 pManager1.makeStep(steps);
@@ -372,6 +379,10 @@ public class GameActivity extends AppCompatActivity implements GameListener,
         }
     }
 
+    public int getPlayer() {
+        return player;
+    }
+
     @Override
     public void makeShortcut(int surtcut) {
         if (player == 0)
@@ -393,6 +404,8 @@ public class GameActivity extends AppCompatActivity implements GameListener,
 
     @Override
     public void shortcutChange(final int index) {
+        if (mode != 0 && game instanceof Game)
+            roomPlayModel.shortcutChange(index);
         if (!gameStarted)
             return;
         Log.i(tag, "Shortcut changed.");
@@ -444,12 +457,13 @@ public class GameActivity extends AppCompatActivity implements GameListener,
             boardGrid.setAdapter(boardAdapter);
             boardGrid.requestLayout();
         }
-        game.addListener(roomPlayModel);
         roomPlayModel.setGame(game);
         if (RoomPlayModel.isCreator) {
             roomPlayModel.setShortcuts(game.getBoard().getShortcuts());
             dice.setClickable(true);
         }
+        else
+            player = 1;
         Toast t = Toast.makeText(this, R.string.directions,
                 Toast.LENGTH_LONG);
         t.show();

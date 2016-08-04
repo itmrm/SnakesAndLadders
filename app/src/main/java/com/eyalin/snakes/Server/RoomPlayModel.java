@@ -63,7 +63,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
     public boolean mPlaying = false;
     public String mRoomId = "2";
     private  Context mContext;
-    private int player = 1;
+    private int player = 0;
 
     int GamePlayerStatus = 0; // 0 - single player, 1 - leader, 2 - follower.
     private AbsGame mGame;
@@ -92,11 +92,12 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
     private void makeMove(GameStatus gameStatus) throws IOException {
         //insert any object instead of string, and make sure you parse it in message recieved
         byte[] message =  convertToBytes(gameStatus);
-
+        Log.i(tag, "Message sent.");
 
         for (Participant p : RoomPlayModel.roomPlay.getParticipants()) {
             if (!p.getPlayer().getPlayerId().equals(RoomPlayModel.currentPlayer.getPlayerId())) {
-                Games.RealTimeMultiplayer.sendReliableMessage(RoomPlayModel.mGoogleApiClient, this, message,
+                Games.RealTimeMultiplayer.sendReliableMessage(RoomPlayModel.mGoogleApiClient,
+                        this, message,
                         RoomPlayModel.roomPlay.getRoomId(), p.getParticipantId());
             }
         }
@@ -130,7 +131,8 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
                 // accept invitation
                 RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
                 roomConfigBuilder.setInvitationIdToAccept(inv.getInvitationId());
-                Games.RealTimeMultiplayer.join(RoomPlayModel.mGoogleApiClient, roomConfigBuilder.build());
+                Games.RealTimeMultiplayer.join(RoomPlayModel.mGoogleApiClient,
+                        roomConfigBuilder.build());
 
                 // prevent screen from sleeping during handshake
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -234,15 +236,24 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
     @Override
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
-        Toast t = Toast.makeText(mContext, "Message Recievd", Toast.LENGTH_LONG);
-        t.show();
             Log.e(tag, "Message Received.");
         try {
             GameStatus gameStatus = (GameStatus)convertFromBytes(realTimeMessage.getMessageData());
-            if (gameStatus.steps != 0)
-                mGame.play(gameStatus.steps);
-            else if (gameStatus.index != -1)
-                mGame.setShortcut(gameStatus.shortcut, gameStatus.index);
+            if (gameStatus.steps != 0) {
+                if (player == 0) {
+                    Toast.makeText(mContext, "Steps: " + gameStatus.steps, Toast.LENGTH_SHORT
+                    ).show();
+                    mGame.play(gameStatus.steps);
+                }
+                else
+                    player = 0;
+            }
+            else if (gameStatus.index != -1) {
+                if (player == 0)
+                    mGame.setShortcut(gameStatus.shortcut, gameStatus.index);
+                else
+                    player = 0;
+            }
             else {
                 Log.i(tag, "Set Shortcuts Message.");
                 int length = gameStatus.shortcuts.length;
@@ -420,10 +431,12 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
     @Override
     public void makeSteps(int steps) {
         Log.e(tag, "Send steps");
-        if ((isCreator == true && player == 0) || (isCreator == false && player == 1)) {
+        if ((RoomPlayModel.isCreator == true && player == 0) ||
+                (RoomPlayModel.isCreator == false && player == 1)) {
             GameStatus gameStatus = new GameStatus();
             gameStatus.steps = steps;
             try {
+                player = 1;
                 makeMove(gameStatus);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -434,10 +447,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
     @Override
     public void turnChanged() {
-        if (player == 0)
-            player = 1;
-        else
-            player = 0;
+
     }
 
     @Override
@@ -456,6 +466,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         gameStatus.index = index;
         gameStatus.shortcut = mGame.getBoard().getShortcuts()[index];
         try {
+            player = 1;
             makeMove(gameStatus);
         } catch (IOException e) {
             e.printStackTrace();
@@ -464,7 +475,6 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
     public void setGame(AbsGame game) {
         mGame = game;
-        mGame.addListener(this);
         Log.e(tag, "Game Setted.");
     }
 

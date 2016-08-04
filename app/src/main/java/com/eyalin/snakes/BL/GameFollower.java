@@ -72,8 +72,7 @@ public class GameFollower implements AbsGame {
     }
 
     public void fireShortcutChanged(int index) {
-        for (GameListener l : listeners)
-            l.shortcutChange(index);
+
     }
 
     @Override
