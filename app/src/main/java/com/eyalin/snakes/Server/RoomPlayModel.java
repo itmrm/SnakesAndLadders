@@ -46,7 +46,7 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
         View.OnClickListener,OnInvitationReceivedListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        RealTimeMessageReceivedListener, GameListener {
+        RealTimeMessageReceivedListener {
 
     static final String tag = "RoomPlayModel";
 
@@ -428,7 +428,6 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
     }
 
-    @Override
     public void makeSteps(int steps) {
         Log.e(tag, "Send steps");
         if ((RoomPlayModel.isCreator == true && player == 0) ||
@@ -445,22 +444,18 @@ public class RoomPlayModel extends AppCompatActivity implements RoomStatusUpdate
 
     }
 
-    @Override
     public void turnChanged() {
 
     }
 
-    @Override
     public void makeShortcut(int shortcut) {
 
     }
 
-    @Override
     public void gameOver(com.eyalin.snakes.BL.Player winner) {
 
     }
 
-    @Override
     public void shortcutChange(int index) {
         GameStatus gameStatus = new GameStatus();
         gameStatus.index = index;

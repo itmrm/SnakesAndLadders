@@ -93,6 +93,7 @@ public class GameActivity extends AppCompatActivity implements GameListener,
     private boolean pawnInPlace;
     private TextView playerTxt;
     private TextView phoneTxt;
+    private boolean canSendSteps = true;
 
     //Buttons
     private SignInButton btn_SignIn;
